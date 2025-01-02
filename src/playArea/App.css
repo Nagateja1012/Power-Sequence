@@ -95,13 +95,3 @@
 
 }
 
-/* Player Cards (bottom, spread horizontally) */
-.Player-Cards {
-  position: absolute;
-  bottom: 0;
-  left: 5%;
-  display: flex;
-  justify-content: space-evenly;
-  align-items: center;
-  
-}

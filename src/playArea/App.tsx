@@ -2,10 +2,12 @@
 import "./App.css";
 import GameBoard from "../GameBoard/gameboard.component";
 import deck from "../assets/deck.png";
-import p1 from "../assets/profile/P1.png";
-import R1 from "../assets/red/R1.png"
-import alter from "../assets/power/ALTER.png"
-import g2 from "../assets/green/G2.png"
+import ImageGallery from "../playerHand/playerHand.component";
+import { CreatePlayerElements, UpdatePlayingState } from "../Player/player.component";
+import CardPlayed from "../PlayedCard/PlayedCard.component";
+import {winSound as playsound} from "../GameSounds/SoundEffects.component"
+
+
 function App() {
   const inputData = [
     { value: 7, color: 'R' },
@@ -69,7 +71,81 @@ function App() {
     { value: 9, color: 'R' },
     { value: 6, color: 'G' }
 ];
-  
+const samplePlayers = [
+  {
+    name: "John Smith",
+    playerNumber: 1,
+    group: 1,
+    isPlaying: true
+  },
+  {
+    name: "Sarah Johnson", 
+    playerNumber: 2,
+    group: 2,
+    isPlaying: false
+  },
+  {
+    name: "Mike Williams",
+    playerNumber: 3, 
+    group: 1,
+    isPlaying: false
+  },
+  {
+    name: "Emily Brown",
+    playerNumber: 4,
+    group: 2, 
+    isPlaying: false
+  },
+  {
+    name: "David Miller",
+    playerNumber: 5,
+    group: 3,
+    isPlaying: false
+  },
+  {
+    name: "John Smith",
+    playerNumber: 6,
+    group: 1,
+    isPlaying: true
+  },
+  {
+    name: "Sarah Johnson", 
+    playerNumber: 7,
+    group: 2,
+    isPlaying: false
+  },
+  {
+    name: "Mike Williams",
+    playerNumber: 8, 
+    group: 1,
+    isPlaying: false
+  },
+  {
+    name: "Emily Brown",
+    playerNumber: 9,
+    group: 2, 
+    isPlaying: false
+  },
+  {
+    name: "David Miller",
+    playerNumber: 10,
+    group: 3,
+    isPlaying: false
+  },
+  {
+    name: "Emily Brown",
+    playerNumber: 11,
+    group: 2, 
+    isPlaying: false
+  },
+  {
+    name: "David Miller",
+    playerNumber: 12,
+    group: 3,
+    isPlaying: false
+  }
+];
+
   return (
  
     <div className="play-area">
@@ -77,130 +153,8 @@ function App() {
     <div className="Game-Board"><GameBoard inputData={inputData} /></div>
 
     
-    <div className="Player Player1"> <img 
-          src={p1}
-          alt="Pick a card"
-          onClick={()=> console.log("pick up card.")}
-          style={{
-            width: '70px',
-            height: '70px',
-            cursor: 'pointer'
-          }}
-        />
-        player 1</div>
-    <div className="Player Player2"><img 
-          src={p1}
-          alt="Pick a card"
-          onClick={()=> console.log("pick up card.")}
-          style={{
-            width: '70px',
-            height: '70px',
-            cursor: 'pointer'
-          }}
-        />Player 2</div>
-    <div className="Player Player3"><img 
-          src={p1}
-          alt="Pick a card"
-          onClick={()=> console.log("pick up card.")}
-          style={{
-            width: '70px',
-            height: '70px',
-            cursor: 'pointer'
-          }}
-        />Player 3</div>
-    <div className="Player Player4"><img 
-          src={p1}
-          alt="Pick a card"
-          onClick={()=> console.log("pick up card.")}
-          style={{
-            width: '70px',
-            height: '70px',
-            cursor: 'pointer'
-          }}
-        />Player 4</div>
-    <div className="Player Player5"><img 
-          src={p1}
-          alt="Pick a card"
-          onClick={()=> console.log("pick up card.")}
-          style={{
-            width: '70px',
-            height: '70px',
-            cursor: 'pointer'
-          }}
-        />Player 5</div>
-    <div className="Player Player6"><img 
-          src={p1}
-          alt="Pick a card"
-          onClick={()=> console.log("pick up card.")}
-          style={{
-            width: '70px',
-            height: '70px',
-            cursor: 'pointer'
-          }}
-        />Player 6</div>
-    <div className="Player Player7"><img 
-          src={p1}
-          alt="Pick a card"
-          onClick={()=> console.log("pick up card.")}
-          style={{
-            width: '70px',
-            height: '70px',
-            cursor: 'pointer'
-          }}
-        />Player 7</div>
-    <div className="Player Player8"><img 
-          src={p1}
-          alt="Pick a card"
-          onClick={()=> console.log("pick up card.")}
-          style={{
-            width: '70px',
-            height: '70px',
-            cursor: 'pointer'
-          }}
-        />Player 8</div>
-    <div className="Player Player9"><img 
-          src={p1}
-          alt="Pick a card"
-          onClick={()=> console.log("pick up card.")}
-          style={{
-            width: '70px',
-            height: '70px',
-            cursor: 'pointer'
-          }}
-        />Player 9</div>
-    <div className="Player Player10"><img 
-          src={p1}
-          alt="Pick a card"
-          onClick={()=> console.log("pick up card.")}
-          style={{
-            width: '70px',
-            height: '70px',
-            cursor: 'pointer'
-          }}
-        />Player 10</div>
-    <div className="Player Player11"><img 
-          src={p1}
-          alt="Pick a card"
-          onClick={()=> console.log("pick up card.")}
-          style={{
-            width: '70px',
-            height: '70px',
-            cursor: 'pointer'
-          }}
-        />Player 11</div>
-    <div className="Player Player12"><img 
-          src={p1}
-          alt="Pick a card"
-          onClick={()=> console.log("pick up card.")}
-          style={{
-            width: '70px',
-            height: '70px',
-            cursor: 'pointer'
-          }}
-        />Player 12</div>
-
-   
-    <div className="Deck"> <img 
+    <CreatePlayerElements players={samplePlayers as { name: string; playerNumber: number; group: 1 | 2 | 3; isPlaying: boolean; }[]} />      
+      <div className="Deck"> <img 
           src={deck}
           alt="Pick a card"
           onClick={()=> console.log("pick up card.")}
@@ -212,104 +166,21 @@ function App() {
         /></div>
 
    
-    <div className="Played-Cards"> <img 
-          src={g2}
-          alt="Pick a card"
-          onClick={()=> console.log("pick up card.")}
-          style={{
-            width: '120px',
-            height: '180px',
-            cursor: 'pointer'
-          }}
-        /></div>
+      <CardPlayed imageName="ALTER" />
 
    
-    <div className="Claim-Button">Claim</div>
+    <div className="Claim-Button" onClick={()=>{
+      UpdatePlayingState("Mike Williams")
+    } }>Claim</div>
 
    
-    <div className="Timer">Timer</div>
+    <div className="Timer" ><button onClick={()=>{
+      playsound()
+    }}>testing</button></div>
+  
 
-
-    <div className="Player-Cards">
-    <img 
-          src={R1}
-          alt="Pick a card"
-          onClick={()=> console.log("pick up card.")}
-          style={{
-            width: '120px',
-            height: '180px',
-            cursor: 'pointer'
-          }}
-        />
-        <img 
-          src={alter}
-          alt="Pick a card"
-          onClick={()=> console.log("pick up card.")}
-          style={{
-            width: '120px',
-            height: '180px',
-            cursor: 'pointer'
-          }}
-        />
-         <img 
-          src={R1}
-          alt="Pick a card"
-          onClick={()=> console.log("pick up card.")}
-          style={{
-            width: '120px',
-            height: '180px',
-            cursor: 'pointer'
-          }}
-        />
-        <img 
-          src={alter}
-          alt="Pick a card"
-          onClick={()=> console.log("pick up card.")}
-          style={{
-            width: '120px',
-            height: '180px',
-            cursor: 'pointer'
-          }}
-        /> <img 
-        src={R1}
-        alt="Pick a card"
-        onClick={()=> console.log("pick up card.")}
-        style={{
-          width: '120px',
-          height: '180px',
-          cursor: 'pointer'
-        }}
-      />
-      <img 
-        src={alter}
-        alt="Pick a card"
-        onClick={()=> console.log("pick up card.")}
-        style={{
-          width: '120px',
-          height: '180px',
-          cursor: 'pointer'
-        }}
-      />
-       <img 
-          src={R1}
-          alt="Pick a card"
-          onClick={()=> console.log("pick up card.")}
-          style={{
-            width: '120px',
-            height: '180px',
-            cursor: 'pointer'
-          }}
-        />
-        <img 
-          src={alter}
-          alt="Pick a card"
-          onClick={()=> console.log("pick up card.")}
-          style={{
-            width: '120px',
-            height: '180px',
-            cursor: 'pointer'
-          }}
-        />
+    <div >
+   <ImageGallery  images={["R1", "ALTER","R2", "DROP","B1", "GRAB","G1","R1", "G5","R9"]}/>
     </div>
 </div>
 

@@ -3,9 +3,8 @@ import BoardRender from "./boardRender.component";
 
 import { CellData, InputItem } from "./types";
 import { getColor, arePointsInLine } from "./utils";
-import { AnimationDiv } from "./styles";
-import Lottie from "lottie-react"
-import explosion from "../assets/animations/joker.json"
+import Animation from "../GameAnimations/animation.component";
+
 
 interface GameBoardProps {
   inputData: InputItem[];
@@ -103,14 +102,7 @@ const GameBoard: React.FC<GameBoardProps> = ({ inputData }) => {
         selectedCellIndex={selectedCellIndex}
         onCellClick={handleCellClick}
       />
-      <AnimationDiv>
-        <Lottie 
-          animationData={explosion} 
-          loop={true}  
-          autoplay
-          style={{ height: "300px", width: "300px" }}
-        />
-      </AnimationDiv>
+     <Animation animationName="grab" />
     </div>
   );
 };
