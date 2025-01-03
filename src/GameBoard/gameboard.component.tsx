@@ -4,6 +4,7 @@ import BoardRender from "./boardRender.component";
 import { CellData, InputItem } from "./types";
 import { getColor, arePointsInLine } from "./utils";
 import Animation from "../GameAnimations/animation.component";
+import { CoinSound } from "../GameSounds/SoundEffects.component";
 
 
 interface GameBoardProps {
@@ -77,12 +78,14 @@ const GameBoard: React.FC<GameBoardProps> = ({ inputData }) => {
           if (maxSelectionLimit === 4) setMaxSelectionLimit(5);
           console.log("max");
           console.log(arePointsInLine(selectedcells));
+          
           setIsSelectionActive(false);
           setSelectedCellIndex([]);
         }
       }
     } else {
       if (grid[row][col].value !== -1) {
+        CoinSound();
         const newGrid = grid.map((row) => [...row]);
         newGrid[row][col] = {
           ...newGrid[row][col],

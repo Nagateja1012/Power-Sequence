@@ -19,10 +19,8 @@ const BoardRender: React.FC<BoardRenderProps> = ({
   onCellClick 
 }) => {
 
-  const blue = ImageLoader({src: import.meta.env.VITE_COINS_URL+'blue.png'})?.toString();
-  const gold = ImageLoader({src: import.meta.env.VITE_COINS_URL+'gold.png'})?.toString();
-  const silver = ImageLoader({src: import.meta.env.VITE_COINS_URL+'silver.png'})?.toString();
-  const star = ImageLoader({src: import.meta.env.VITE_ASSETS_URL+'star.png'})?.toString();
+
+ 
 
 return (
     <GridContainer>
@@ -38,10 +36,13 @@ return (
               <CellNumber>{cell.value}</CellNumber>
             )}
             {cell.hasIcon && corners.some(([r, c]) => r === rowIndex && c === colIndex) && (
-              <IconImage src={star} alt="coin" /> 
+              <ImageLoader StyledImg={IconImage} src={import.meta.env.VITE_ASSETS_URL+'star.png'}  /> 
             )}
             {cell.hasIcon && !corners.some(([r, c]) => r === rowIndex && c === colIndex) && (
-              <IconImage src={cell.player === 'blue' ? blue : cell.player === 'gold' ? gold : silver} alt="coin" />
+              <ImageLoader StyledImg={IconImage}
+              src={cell.player === 'blue' ?  import.meta.env.VITE_COINS_URL+'blue.png' : cell.player === 'gold' ? import.meta.env.VITE_COINS_URL+'gold.png' : import.meta.env.VITE_COINS_URL+'silver.png'}  />
+
+              
             )}
           </Cell>
         ))

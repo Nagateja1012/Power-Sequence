@@ -1,5 +1,5 @@
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { PlayerCardImg, PlayerScrollButtonLeft, PlayerScrollButtonRight } from '../GameBoard/styles';
 import ImageLoader from '../AssetsLoader/imageLoader.component';
 
@@ -7,11 +7,22 @@ interface ImageGalleryProps {
   images: string[];
 }
 
-
-
 const ImageGallery: React.FC<ImageGalleryProps> = ({ images }) => {
   const [scrollPosition, setScrollPosition] = useState(0);
+  const [showButtons, setShowButtons] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  // Reset scroll position when images change
+  useEffect(() => {
+    setScrollPosition(0);
+  }, [images]);
+
+  // Check if buttons should be shown
+  useEffect(() => {
+    if (containerRef.current) {
+      setShowButtons(containerRef.current.scrollWidth > containerRef.current.clientWidth);
+    }
+  }, [images]);
 
   const scroll = (direction: 'left' | 'right') => {
     if (containerRef.current) {
@@ -39,18 +50,17 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ images }) => {
           scrollBehavior: 'smooth',
         }}
       >
-        {images.map((image, index) => (
-          <PlayerCardImg
-            key={index}
-            src={ ImageLoader({
-              src: import.meta.env.VITE_CARDS_URL+image+'.png'
-            })?.toString()}
-            alt={`Image ${index + 1}`}
-          />
+        {images.map((image) => (
+          <ImageLoader
+
+            src={ import.meta.env.VITE_CARDS_URL+image+'.png'}
+            StyledImg={PlayerCardImg}
+         
+      />
         ))}
       </div>
       
-      {images.length >= 10 && (
+      {showButtons && (
         <>
           <PlayerScrollButtonLeft scrollPosition={scrollPosition} hidden={false}
             onClick={() => scroll('left')}

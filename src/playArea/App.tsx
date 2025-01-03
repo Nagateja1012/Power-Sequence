@@ -1,11 +1,12 @@
 
-import "./App.css";
 import GameBoard from "../GameBoard/gameboard.component";
 import ImageGallery from "../playerHand/playerHand.component";
 import { CreatePlayerElements, UpdatePlayingState } from "../Player/player.component";
 import CardPlayed from "../PlayedCard/PlayedCard.component";
 import {winSound as playsound} from "../GameSounds/SoundEffects.component"
 import ImageLoader from "../AssetsLoader/imageLoader.component";
+import { ClaimButton, Deck, DeckImage, GameBoardStyle, PlayArea, Score } from "./App.styles";
+import CardSelect from "../PowerCards/CardSelect/CardSelect.component";
 
 
 function App() {
@@ -148,41 +149,34 @@ const samplePlayers = [
 
   return (
  
-    <div className="play-area">
+    <PlayArea>
    
-    <div className="Game-Board"><GameBoard inputData={inputData} /></div>
+    <GameBoardStyle ><GameBoard inputData={inputData} /></GameBoardStyle>
 
     
     <CreatePlayerElements players={samplePlayers as { name: string; playerNumber: number; group: 1 | 2 | 3; isPlaying: boolean; }[]} />      
-      <div className="Deck"> <img 
-          src={ImageLoader({src: import.meta.env.VITE_ASSETS_URL+'deck.png'})?.toString()}
-          alt="Pick a card"
-          onClick={()=> console.log("pick up card.")}
-          style={{
-            width: '80px',
-            height: '120px',
-            cursor: 'pointer'
-          }}
-        /></div>
+       <Deck ><ImageLoader 
+          src={ import.meta.env.VITE_ASSETS_URL+'deck.png'}
+          StyledImg={DeckImage}
+        /> </Deck>
 
    
       <CardPlayed imageName="ALTER" />
 
    
-    <div className="Claim-Button" onClick={()=>{
+    <ClaimButton  onClick={()=>{
       UpdatePlayingState("Mike Williams")
-    } }>Claim</div>
+    } }>Claim</ClaimButton>
 
    
-    <div className="Timer" ><button onClick={()=>{
+    <Score ><button onClick={()=>{
       playsound()
-    }}>testing</button></div>
+    }}>testing</button></Score>
   
 
-    <div >
-   <ImageGallery  images={["R1", "ALTER","R2", "DROP","B1", "GRAB","G1","R1", "G5","R9"]}/>
-    </div>
-</div>
+   <ImageGallery  images={["R1", "ALTER","R2", "DROP","B1", "GRAB","G1",  "DROP"]}/>
+   <CardSelect cards={["R1", "ALTER","R2", "DROP"]} />
+    </PlayArea>
 
   );
 }

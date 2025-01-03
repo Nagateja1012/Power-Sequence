@@ -13,14 +13,13 @@ interface ImageDisplayProps {
 
 
 const CardPlayed: React.FC<ImageDisplayProps> = ({ imageName }) => {
-  const image = ImageLoader({
-    src: import.meta.env.VITE_CARDS_URL+imageName+'.png'
-  });
+
   
   return (
     <PlayedCards>
-      <CardImage
-        src={image?.toString()}
+      <ImageLoader
+        src={import.meta.env.VITE_CARDS_URL+imageName+'.png'}
+        StyledImg={CardImage}
       />
     </PlayedCards>
   );  
