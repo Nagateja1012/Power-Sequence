@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { CardImage, PlayedCards } from './PlayedCard.styles';
-
+import ImageLoader from '../AssetsLoader/imageLoader.component';
 
 
 // Styled component for the image container
@@ -13,12 +13,14 @@ interface ImageDisplayProps {
 
 
 const CardPlayed: React.FC<ImageDisplayProps> = ({ imageName }) => {
- 
+  const image = ImageLoader({
+    src: import.meta.env.VITE_CARDS_URL+imageName+'.png'
+  });
   
   return (
     <PlayedCards>
       <CardImage
-        src={`https://amplify-d2m60estt4gxi5-ma-gameassetsbucket667d9212-ajqdx2pdjows.s3.us-east-1.amazonaws.com/assets/cards/${imageName}.png`}
+        src={image?.toString()}
       />
     </PlayedCards>
   );  

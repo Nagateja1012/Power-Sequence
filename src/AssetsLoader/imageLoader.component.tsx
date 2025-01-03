@@ -13,7 +13,7 @@ const ImageLoader: React.FC<ImageLoaderProps> = ({ src }) => {
 
   useEffect(() => {
     const cacheImage = async () => {
-      const cacheName = 'game-assets'; // Cache name
+      const cacheName = 'Power-Sequence-assets'; // Cache name
       const cache = await caches.open(cacheName);
 
       // Check if the image is already cached
@@ -29,7 +29,6 @@ const ImageLoader: React.FC<ImageLoaderProps> = ({ src }) => {
           if (response.ok) {
             await cache.put(src, response.clone());
             setCachedUrl(src); // Set cached URL after storing
-
           } else {
             console.error(`Failed to fetch image: ${response.statusText}`);
             setHasError(true); // Set error state
@@ -58,6 +57,7 @@ const ImageLoader: React.FC<ImageLoaderProps> = ({ src }) => {
   const displayImage = hasError ? FallbackImage : cachedUrl;
 
   return displayImage;
+          
 };
 
 export default ImageLoader;

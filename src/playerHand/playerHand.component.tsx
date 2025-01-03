@@ -1,6 +1,7 @@
 
 import React, { useState, useRef } from 'react';
 import { PlayerCardImg, PlayerScrollButtonLeft, PlayerScrollButtonRight } from '../GameBoard/styles';
+import ImageLoader from '../AssetsLoader/imageLoader.component';
 
 interface ImageGalleryProps {
   images: string[];
@@ -41,7 +42,9 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ images }) => {
         {images.map((image, index) => (
           <PlayerCardImg
             key={index}
-            src={`./src/assets/cards/${image}.png`}
+            src={ ImageLoader({
+              src: import.meta.env.VITE_CARDS_URL+image+'.png'
+            })?.toString()}
             alt={`Image ${index + 1}`}
           />
         ))}
