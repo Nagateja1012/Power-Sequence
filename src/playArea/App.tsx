@@ -3,10 +3,15 @@ import GameBoard from "../GameBoard/gameboard.component";
 import ImageGallery from "../playerHand/playerHand.component";
 import { CreatePlayerElements, UpdatePlayingState } from "../Player/player.component";
 import CardPlayed from "../PlayedCard/PlayedCard.component";
-import {winSound as playsound} from "../GameSounds/SoundEffects.component"
 import ImageLoader from "../AssetsLoader/imageLoader.component";
 import { ClaimButton, Deck, DeckImage, GameBoardStyle, PlayArea, Score } from "./App.styles";
 import CardSelect from "../PowerCards/CardSelect/CardSelect.component";
+import { useSelection } from "../GameBoard/gameboard.context";
+import GameForm from "../lobby/lobby.component";
+import RoomScreen from "../Room/Room.component";
+
+
+
 
 
 function App() {
@@ -147,10 +152,26 @@ const samplePlayers = [
   }
 ];
 
+const samplePlayer = [
+  { id: "1", name: "Alice", teamId: null },
+  { id: "2", name: "Bob", teamId: null },
+  { id: "3", name: "Charlie", teamId: null },
+];
+
+const sampleTeams = [
+  { id: "1", name: "Team Red" },
+  { id: "2", name: "Team Blue" },
+];
+
+const currentPlayerId = "2"; 
+const { setIsSelectionActive} = useSelection();
   return (
  
     <PlayArea>
-   
+      <RoomScreen playersData={samplePlayer}
+  teamsData={sampleTeams}
+  currentPlayerId={currentPlayerId} ></RoomScreen>
+    {false &&  <div>
     <GameBoardStyle ><GameBoard inputData={inputData} /></GameBoardStyle>
 
     
@@ -170,12 +191,12 @@ const samplePlayers = [
 
    
     <Score ><button onClick={()=>{
-      playsound()
+      
+      setIsSelectionActive('Erase')
     }}>testing</button></Score>
-  
 
    <ImageGallery  images={["R1", "ALTER","R2", "DROP","B1", "GRAB","G1",  "DROP"]}/>
-   <CardSelect cards={["R1", "ALTER","R2", "DROP"]} />
+   <CardSelect cards={["R1", "ALTER","R2", "DROP"]} /> </div> }
     </PlayArea>
 
   );

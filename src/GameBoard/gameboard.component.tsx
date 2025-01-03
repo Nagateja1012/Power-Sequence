@@ -5,6 +5,7 @@ import { CellData, InputItem } from "./types";
 import { getColor, arePointsInLine } from "./utils";
 import Animation from "../GameAnimations/animation.component";
 import { CoinSound } from "../GameSounds/SoundEffects.component";
+import { useSelection } from "./gameboard.context";
 
 
 interface GameBoardProps {
@@ -58,12 +59,18 @@ const GameBoard: React.FC<GameBoardProps> = ({ inputData }) => {
 
   const [grid, setGrid] = useState<CellData[][]>(initialGrid);
 
-  const [isSelectionActive, setIsSelectionActive] = useState(false);
+  const {isSelectionActive, setIsSelectionActive} = useSelection();
   const [maxSelectionLimit, setMaxSelectionLimit] = useState(5);
   const [selectedCellIndex, setSelectedCellIndex] = useState<number[][]>([]);
 
+ const activateSelection = () => {
+  console.log(isSelectionActive)
+};
+
+
   const handleCellClick = (row: number, col: number) => {
-    if (isSelectionActive) {
+    console.log(grid)
+    if (isSelectionActive !== 'Erase' && isSelectionActive !== ''  ) {
       if (
         !selectedCellIndex.some(([r, c]) => r === row && c === col) &&
         grid[row][col].hasIcon
@@ -76,26 +83,57 @@ const GameBoard: React.FC<GameBoardProps> = ({ inputData }) => {
 
         if (selectedcells.length === maxSelectionLimit) {
           if (maxSelectionLimit === 4) setMaxSelectionLimit(5);
-          console.log("max");
-          console.log(arePointsInLine(selectedcells));
+          if(arePointsInLine(selectedcells)){
+            if(isSelectionActive === 'Destroy'){
+              console.log(selectedcells)
+              DestoryCoins();
+              // send message to the server about the remove of the coins
+            }else{
+
+            }
+          }
           
-          setIsSelectionActive(false);
-          setSelectedCellIndex([]);
+          setIsSelectionActive('');        
+                      setSelectedCellIndex([]);
         }
       }
     } else {
       if (grid[row][col].value !== -1) {
         CoinSound();
         const newGrid = grid.map((row) => [...row]);
+        if(isSelectionActive === 'Erase' ){
+          // if([row,col] not in seuqnece list)
+          newGrid[row][col] = {
+            ...newGrid[row][col],
+            hasIcon: false,
+          };
+          setIsSelectionActive('');  
+        }else{
         newGrid[row][col] = {
           ...newGrid[row][col],
-          hasIcon: !newGrid[row][col].hasIcon,
+          hasIcon: true,
           player: "gold",
-        };
+        };}
         setGrid(newGrid);
       }
     }
   };
+
+  const DestoryCoins = ()=>{
+    selectedCellIndex.forEach(([row, col]) => {
+      
+      if (grid[row][col].value !== -1){
+        const newGrid = grid.map((row) => [...row]);
+        console.log(newGrid)
+        newGrid[row][col] = {
+          ...newGrid[row][col],
+          hasIcon: false,
+          player: "gold",
+        };
+        setGrid(newGrid);
+      }
+  
+});  } 
 
   return (
     <div style={{ position: 'relative' }}>
@@ -105,6 +143,7 @@ const GameBoard: React.FC<GameBoardProps> = ({ inputData }) => {
         selectedCellIndex={selectedCellIndex}
         onCellClick={handleCellClick}
       />
+      <button onClick={activateSelection}> testubg</button>
      <Animation animationName="grab" />
     </div>
   );
