@@ -56,7 +56,7 @@ const ImageLoader: React.FC<ImageLoaderProps> = ({ src }) => {
   // Fallback to placeholder image if error occurs
   const displayImage = hasError ? FallbackImage : cachedUrl;
 
-  return displayImage;
+  return displayImage  ;
           
 };
 

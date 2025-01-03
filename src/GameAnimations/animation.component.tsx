@@ -5,6 +5,7 @@ import Lottie from "lottie-react"
 
 import { useState } from "react";
 import AnimationLoader from "../AssetsLoader/animationLoader.component";
+import { alterSound, DropSound,  explosionSound, grabSound, jokerSound, reverseSound} from "../GameSounds/SoundEffects.component";
 
 
 interface AnimationProps {
@@ -15,6 +16,33 @@ interface AnimationProps {
 
 const Animation: React.FC<AnimationProps> =  ({ animationName }) => {
 
+  switch (animationName) {
+    case "drop":
+      DropSound();
+      break;
+    case "alterfuture":
+      alterSound();
+      break;
+    case "eraser":
+      reverseSound();
+      break;
+    case "explosion":
+      explosionSound();
+      break;
+    case "joker":
+      jokerSound();
+      break;
+    case "grab":
+      grabSound();
+      break;
+    case "reverse":
+      reverseSound();
+      break;
+    case "skip":
+      reverseSound();
+      break;
+  }
+  
   const [display, setDisplay] = useState(true);
 
   return (

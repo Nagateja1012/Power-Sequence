@@ -16,7 +16,7 @@ export function CreatePlayerElements({players}: {players: PlayerData[]}): JSX.El
   return players.map(player => (
     <PlayerContainer className={`Player Player${player.playerNumber}`}>
       <PlayerImage 
-        src={`./src/assets/profile/P${player.playerNumber}.png`}
+        src={import.meta.env.VITE_PROFILE_URL+`P${player.playerNumber}.png`}
         alt={player.name}
       />
       <PlayerName 

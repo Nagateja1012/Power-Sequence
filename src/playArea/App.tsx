@@ -1,11 +1,11 @@
 
 import "./App.css";
 import GameBoard from "../GameBoard/gameboard.component";
-import deck from "../assets/deck.png";
 import ImageGallery from "../playerHand/playerHand.component";
 import { CreatePlayerElements, UpdatePlayingState } from "../Player/player.component";
 import CardPlayed from "../PlayedCard/PlayedCard.component";
 import {winSound as playsound} from "../GameSounds/SoundEffects.component"
+import ImageLoader from "../AssetsLoader/imageLoader.component";
 
 
 function App() {
@@ -155,7 +155,7 @@ const samplePlayers = [
     
     <CreatePlayerElements players={samplePlayers as { name: string; playerNumber: number; group: 1 | 2 | 3; isPlaying: boolean; }[]} />      
       <div className="Deck"> <img 
-          src={deck}
+          src={ImageLoader({src: import.meta.env.VITE_ASSETS_URL+'deck.png'})?.toString()}
           alt="Pick a card"
           onClick={()=> console.log("pick up card.")}
           style={{
