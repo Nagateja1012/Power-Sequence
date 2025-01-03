@@ -16,11 +16,9 @@ const AnimationLoader: React.FC<AnimationLoaderProps> = ({src}) => {
       // Check if the animation data is already cached
       const cachedResponse = await cache.match(src);
       if (cachedResponse) {
-        console.log(`Animation fetched from cache: ${src}`);
         const data = await cachedResponse.json();
         setCachedAnimationData(data);
       } else {
-        console.log(`Caching animation: ${src}`);
         const response = await fetch(src);
         const animationData = await response.json();
         const blob = new Blob([JSON.stringify(animationData)], { type: 'application/json' });

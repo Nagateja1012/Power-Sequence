@@ -19,23 +19,23 @@ const ImageLoader: React.FC<ImageLoaderProps> = ({ src }) => {
       // Check if the image is already cached
       const cachedResponse = await cache.match(src);
       if (cachedResponse) {
-        console.log(`Image fetched from cache: ${src}`);
+
         setCachedUrl(src); // Use cached URL
 
       } else {
-        console.log(`Fetching and caching image: ${src}`);
+
         try {
           const response = await fetch(src);
           if (response.ok) {
             await cache.put(src, response.clone());
             setCachedUrl(src); // Set cached URL after storing
           } else {
-            console.error(`Failed to fetch image: ${response.statusText}`);
+
             setHasError(true); // Set error state
 
           }
         } catch (error) {
-          console.error(`Error fetching image: ${error}`);
+
           setHasError(true); // Set error state
         }
       }
