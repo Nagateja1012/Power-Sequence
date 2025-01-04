@@ -2,7 +2,8 @@
 import React, { useState } from 'react';
 
 import {  FormGroup, GameFormContainer, GameFormStyled, Input, Label, ModeToggle, Select, StyledTitle, SubmitButton, ToggleButton } from './lobby.styles';
-import { GameFormData } from '../models/model';
+import { GameFormData } from '../../models/model';
+
 
 interface GameFormProps {
   onSubmit: (formData: GameFormData) => void;
