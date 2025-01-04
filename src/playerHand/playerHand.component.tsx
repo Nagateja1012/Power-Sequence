@@ -5,9 +5,10 @@ import ImageLoader from '../AssetsLoader/imageLoader.component';
 import { useSelection } from '../GameBoard/gameboard.context';
 import { usePlayedCard } from '../PlayedCard/PlayedCard.context';
 import { usePlayerHand } from './playerHand.context';
-import { Drop } from '../PowerCards/Drop/Drop.component';
-import { AlterCards } from '../Services/Service.Read';
-import { useCards } from '../PowerCards/CardSelect/CardSelect.context';
+import { AlterCards, GrabCards } from '../Services/Service.Read';
+import { useCards } from '../GameScreens/CardSelect/CardSelect.context';
+import { useGrab } from '../Player/player.context';
+import { DropCardSend, GrabCardsSend, reverseCard, Skipcard } from '../Services/Service.Send';
 
 interface ImageGalleryProps {
   images: string[];
@@ -20,7 +21,8 @@ const ImageGallery: React.FC<ImageGalleryProps> = () => {
   const {setIsSelectionActive, setCardValue} = useSelection();
   const {setPlayedCard} = usePlayedCard();
   const {images, setImages} = usePlayerHand();
-  const { setCards, setDisplay} = useCards()
+  const { setCards, setDisplay, dropCard, setdropCard,DropCardNum, setDropCardNum} = useCards()
+   const { setGrab, setplayerName, playerName, setgrabbedCard} = useGrab()
 
   // Reset scroll position when images change
   useEffect(() => {
@@ -60,6 +62,16 @@ const HandleCard = (image: string, index:number) =>{
 
   setImages(images.filter((_, i) => i !== index))  
   setPlayedCard(image)
+  if(dropCard){
+    if(image === 'DROP'){
+      DropCardSend(DropCardNum+1);
+      setDropCardNum(0)
+    }else{
+      setDropCardNum(DropCardNum-1)
+    }    
+    setdropCard(DropCardNum !== 0)
+    
+  } else {
 
   if(allcardvalues.includes(image)) {
     setIsSelectionActive('Place');
@@ -74,12 +86,31 @@ const HandleCard = (image: string, index:number) =>{
     setCards(['R1','ALTER','B9','G5'])
         break;
       case 'DROP':
-        Drop()
+        DropCardSend(1);
         break;
       case 'GRAB':
-        
+        setGrab(true)
+        GrabCardsSend(playerName)
+        setCards(['back','back','back','back'])
+        setgrabbedCard(GrabCards())
+        setplayerName("")
         break;
-  
+      case 'SKIP':
+        Skipcard()
+        break;
+      case 'REVERSE':
+        reverseCard();
+        break;
+      case 'ERASE':
+        setIsSelectionActive("Erase");
+      break;
+      case 'JOKER': 
+        setIsSelectionActive("Joker");  
+        break;
+      case 'DESTROY':
+        setIsSelectionActive('Destroy');
+        break;
+    }
     }
   }
 }

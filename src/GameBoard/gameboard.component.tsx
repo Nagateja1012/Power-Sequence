@@ -70,7 +70,7 @@ const GameBoard: React.FC<GameBoardProps> = ({ inputData }) => {
 
   const handleCellClick = (row: number, col: number) => {
 
-    if (isSelectionActive !== 'Erase' && isSelectionActive !== '' && isSelectionActive !== 'Place' ) {
+    if (isSelectionActive !== 'Erase' && isSelectionActive !== '' && isSelectionActive !== 'Place'  && isSelectionActive !== 'Joker' ) {
       if (
         !selectedCellIndex.some(([r, c]) => r === row && c === col) &&
         grid[row][col].hasIcon
@@ -110,9 +110,9 @@ const GameBoard: React.FC<GameBoardProps> = ({ inputData }) => {
           };
           setIsSelectionActive('');  
           setGrid(newGrid);
-        } else if (isSelectionActive === 'Place' 
-                  && grid[row][col].color === getColor(CardValue.substring(0,1))
-                  && grid[row][col].value === Number(CardValue.substring(1)) 
+        } else if (isSelectionActive === 'Place' || isSelectionActive === 'Joker' 
+                  && ((grid[row][col].color === getColor(CardValue.substring(0,1))
+                  && grid[row][col].value === Number(CardValue.substring(1))) || isSelectionActive === 'Joker'  )
                   && grid[row][col].hasIcon === false) { // Fixed parenthesis
           console.log('placing')
           newGrid[row][col] = {

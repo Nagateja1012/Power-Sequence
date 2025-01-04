@@ -1,8 +1,10 @@
 import { UpdatePlayingState } from "../Player/player.component";
-import { usePlayers } from "../Room/Room.context"
+import { useCards } from "../GameScreens/CardSelect/CardSelect.context";
+
 
 
 import { useEffect } from "react"
+import { usePlayers } from "../GameScreens/Room/Room.context";
 
 export const RoomScreenReadService = ()=>{
     const samplePlayer = [
@@ -42,4 +44,15 @@ export const readDeck = () => {
 
 export const AlterCards =() =>{
     //get top 4 cards.
+}
+
+export const GrabCards =() =>{
+    //get top 4 cards.
+    return 'R1'
+}
+
+export const DropCardRead =() =>{
+   const {  setdropCard, setDropCardNum} = useCards();
+    setdropCard(true);
+    setDropCardNum(1);
 }

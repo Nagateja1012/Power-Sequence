@@ -14,16 +14,20 @@ import {
   PlayArea,
   Score,
 } from "./App.styles";
-import CardSelect from "../PowerCards/CardSelect/CardSelect.component";
+import CardSelect from "../GameScreens/CardSelect/CardSelect.component";
 import { useSelection } from "../GameBoard/gameboard.context";
-import GameForm from "../lobby/lobby.component";
-import RoomScreen from "../Room/Room.component";
+
+
 import {   useState } from "react";
 import { GameLobbyDataService } from "../Services/Service.Send";
 import { GameFormData } from "../models/model";
-import { RoomScreenReadService } from "../Services/Service.Read";
-import { useCurrentPlayer } from "../Room/player.context";
+import {  RoomScreenReadService } from "../Services/Service.Read";
+
 import { usePlayerHand } from "../playerHand/playerHand.context";
+import { useCards } from "../GameScreens/CardSelect/CardSelect.context";
+import { useCurrentPlayer } from "../GameScreens/Room/player.context";
+import GameForm from "../GameScreens/lobby/lobby.component";
+import RoomScreen from "../GameScreens/Room/Room.component";
 
 
 
@@ -175,6 +179,7 @@ function App() {
   const { setCurrentPlayer, setNumTeam} = useCurrentPlayer()
   const [currentScreen, setCurrentScreen] = useState("game");
   const {images, setImages} = usePlayerHand();
+  const {  setdropCard, setDropCardNum} = useCards();
  
 
   const handleGameFormSubmit = (formData: GameFormData) => {
@@ -237,7 +242,10 @@ function App() {
           <Score>
             <button
               onClick={() => {
-                setIsSelectionActive("Erase");
+                
+                    setdropCard(true);
+                    setDropCardNum(2);
+                // setIsSelectionActive("Erase");
               }}
             >
               testing

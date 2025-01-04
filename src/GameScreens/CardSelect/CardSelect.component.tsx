@@ -5,12 +5,13 @@ import ImageLoader from '../../AssetsLoader/imageLoader.component';
 import { useCards } from './CardSelect.context';
 import { usePlayerHand } from '../../playerHand/playerHand.context';
 import { alterCardsUpdate } from '../../Services/Service.Send';
+import { useGrab } from '../../Player/player.context';
 
 
 const CardSelect: React.FC = () => {
   const {cards, setCards,display, setDisplay} = useCards()
   const {images, setImages} = usePlayerHand();
-
+     const { grabbedCard, setgrabbedCard} = useGrab()
   return (
     <CardSelectContainer display={display}>
         <CardSelectHeader >Arrange and pick a card</CardSelectHeader>                
@@ -20,8 +21,14 @@ const CardSelect: React.FC = () => {
           key={index}
           draggable
           onClick={() => {
+            if(imageName !== 'back'){
             setImages( [...images, imageName])
             alterCardsUpdate(imageName, cards)
+            
+            }else{
+              setImages( [...images, grabbedCard])
+              setgrabbedCard('')
+            }
             setDisplay(false);
           }}
           onDragStart={(e) => {

@@ -1,3 +1,6 @@
+
+import { useCards } from "../GameScreens/CardSelect/CardSelect.context";
+import { useGrab } from "./player.context";
 import { PlayerContainer, PlayerImage, PlayerName } from "./player.styles";
 
 // Types for player data
@@ -13,8 +16,19 @@ let currentPlayingPlayer: string | null = null;
 
 // Function to create player elements from array
 export function CreatePlayerElements({players}: {players: PlayerData[]}): JSX.Element[] {
+  const {grab, setGrab, setplayerName} = useGrab()
+   const {  setDisplay} = useCards()
+  const handlePlayeClick = (name:string) =>{
+   if(grab){
+    setplayerName(name);
+    setGrab(false)
+    setDisplay(true);
+   }
+
+  }
+
   return players.map(player => (
-    <PlayerContainer className={`Player Player${player.playerNumber}`}>
+    <PlayerContainer className={`Player Player${player.playerNumber}`} onClick={()=> handlePlayeClick(player.name)}>
       <PlayerImage 
         src={import.meta.env.VITE_PROFILE_URL+`P${player.playerNumber}.png`}
         alt={player.name}

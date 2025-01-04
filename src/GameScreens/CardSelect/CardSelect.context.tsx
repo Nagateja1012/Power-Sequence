@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, Dispatch, SetStateAction } from "react";
 
 // Create context to manage cards and display state globally
 export const CardContext = createContext<{
@@ -6,11 +6,19 @@ export const CardContext = createContext<{
   setCards: (cards: any[]) => void;
   display: boolean;
   setDisplay: (display: boolean) => void;
+  dropCard: boolean;
+  setdropCard: (dropCard: boolean) => void;
+  DropCardNum: number;
+  setDropCardNum: Dispatch<SetStateAction<number>>;
 }>({
   cards: [],
   setCards: () => {},
-  display: true,
-  setDisplay: () => {}
+  display: false,
+  setDisplay: () => {},
+  dropCard: false,
+  setdropCard: () => {},
+  DropCardNum: 0,
+  setDropCardNum: () => {},
 });
 
 // Provider component to wrap application
@@ -18,9 +26,11 @@ export const CardProvider = ({ children }: { children: React.ReactNode }) => {
     const initialCards =  ['back','back','back','back']
   const [cards, setCards] = useState(initialCards);
   const [display, setDisplay] = useState(false);
+  const [dropCard, setdropCard] = useState(false);
+  const [DropCardNum, setDropCardNum] = useState(0);
 
   return (
-    <CardContext.Provider value={{ cards, setCards, display, setDisplay }}>
+    <CardContext.Provider value={{ cards, setCards, display, setDisplay,dropCard, setdropCard,DropCardNum, setDropCardNum}}>
       {children}
     </CardContext.Provider>
   );
