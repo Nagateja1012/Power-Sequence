@@ -1,15 +1,15 @@
 
-import React, { useState } from 'react';
+import React from 'react';
 import { CardSelectContainer, CardSelectGrid, CardSelectHeader, CardSelectImg } from './CardSelect.styles';
 import ImageLoader from '../../AssetsLoader/imageLoader.component';
+import { useCards } from './CardSelect.context';
+import { usePlayerHand } from '../../playerHand/playerHand.context';
+import { alterCardsUpdate } from '../../Services/Service.Send';
 
-interface ImageGalleryProps {
-  cards: string[];
-}
 
-const CardSelect: React.FC<ImageGalleryProps> = ({ cards: initialCards }) => {
-  const [cards, setCards] = useState(initialCards);
-  const [display, setDisplay] = useState(true);
+const CardSelect: React.FC = () => {
+  const {cards, setCards,display, setDisplay} = useCards()
+  const {images, setImages} = usePlayerHand();
 
   return (
     <CardSelectContainer display={display}>
@@ -20,8 +20,8 @@ const CardSelect: React.FC<ImageGalleryProps> = ({ cards: initialCards }) => {
           key={index}
           draggable
           onClick={() => {
-            console.log('Clicked image:', imageName);
-            console.log('Current cards:', cards);
+            setImages( [...images, imageName])
+            alterCardsUpdate(imageName, cards)
             setDisplay(false);
           }}
           onDragStart={(e) => {

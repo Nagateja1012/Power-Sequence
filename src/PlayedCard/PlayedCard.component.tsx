@@ -2,23 +2,23 @@
 import React from 'react';
 import { CardImage, PlayedCards } from './PlayedCard.styles';
 import ImageLoader from '../AssetsLoader/imageLoader.component';
+import { usePlayedCard } from './PlayedCard.context';
 
 
 // Styled component for the image container
 
 
-interface ImageDisplayProps {
-  imageName: string;
-}
 
 
-const CardPlayed: React.FC<ImageDisplayProps> = ({ imageName }) => {
 
-  
+
+const CardPlayed: React.FC = () => {
+
+  const {PlayedCard} = usePlayedCard();
   return (
     <PlayedCards>
       <ImageLoader
-        src={import.meta.env.VITE_CARDS_URL+imageName+'.png'}
+        src={import.meta.env.VITE_CARDS_URL+PlayedCard+'.png'}
         StyledImg={CardImage}
       />
     </PlayedCards>

@@ -59,7 +59,7 @@ const GameBoard: React.FC<GameBoardProps> = ({ inputData }) => {
 
   const [grid, setGrid] = useState<CellData[][]>(initialGrid);
 
-  const {isSelectionActive, setIsSelectionActive} = useSelection();
+  const {isSelectionActive, setIsSelectionActive, CardValue, setCardValue} = useSelection();
   const [maxSelectionLimit, setMaxSelectionLimit] = useState(5);
   const [selectedCellIndex, setSelectedCellIndex] = useState<number[][]>([]);
 
@@ -69,8 +69,8 @@ const GameBoard: React.FC<GameBoardProps> = ({ inputData }) => {
 
 
   const handleCellClick = (row: number, col: number) => {
-    console.log(grid)
-    if (isSelectionActive !== 'Erase' && isSelectionActive !== ''  ) {
+
+    if (isSelectionActive !== 'Erase' && isSelectionActive !== '' && isSelectionActive !== 'Place' ) {
       if (
         !selectedCellIndex.some(([r, c]) => r === row && c === col) &&
         grid[row][col].hasIcon
@@ -98,23 +98,34 @@ const GameBoard: React.FC<GameBoardProps> = ({ inputData }) => {
         }
       }
     } else {
-      if (grid[row][col].value !== -1) {
+
+    
+    if (grid[row][col].value !== -1) {
         CoinSound();
         const newGrid = grid.map((row) => [...row]);
-        if(isSelectionActive === 'Erase' ){
-          // if([row,col] not in seuqnece list)
+        if(isSelectionActive === 'Erase' && grid[row][col].hasIcon === true) {
           newGrid[row][col] = {
             ...newGrid[row][col],
             hasIcon: false,
           };
           setIsSelectionActive('');  
-        }else{
-        newGrid[row][col] = {
-          ...newGrid[row][col],
-          hasIcon: true,
-          player: "gold",
-        };}
-        setGrid(newGrid);
+          setGrid(newGrid);
+        } else if (isSelectionActive === 'Place' 
+                  && grid[row][col].color === getColor(CardValue.substring(0,1))
+                  && grid[row][col].value === Number(CardValue.substring(1)) 
+                  && grid[row][col].hasIcon === false) { // Fixed parenthesis
+          console.log('placing')
+          newGrid[row][col] = {
+            ...newGrid[row][col],
+            hasIcon: true,
+            player: "gold",
+          };
+          setIsSelectionActive('');  
+          setCardValue('')
+          setGrid(newGrid);
+        }
+        
+        
       }
     }
   };

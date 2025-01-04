@@ -89,3 +89,28 @@ export const SubmitButton = styled(Button)`
   width: 100%;
   margin-top: 1rem;
 `;  
+
+export const StyledTitle = styled.h1`
+  padding: 10px;
+  animation: moveUp 3s ease-out forwards;
+  position: relative;
+  text-align: center;
+  color:rgb(241, 145, 36);
+  font-size: 2.5rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 2rem;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+  white-space: nowrap;
+  @keyframes moveUp {
+    from {
+      opacity: 0;
+      transform: translateY(50px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+`

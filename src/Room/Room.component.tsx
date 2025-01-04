@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
+import { Player } from "../models/model";
+import { usePlayers } from "./Room.context";
+import { useCurrentPlayer } from "./player.context";
+import { NextButton, PlayerItem, PlayerList, PlayerListItem, RoomContainer, TeamBlock, TeamBlocks, TeamSelect, TeamTitle, Title, WaitingBlock, WaitingTitle } from "./Room.Styles";
 
-// Define TypeScript interfaces
-interface Player {
-  id: string;
-  name: string;
-  teamId: string | null; // Null if the player hasn't selected a team
+
+interface RoomScreenProps {
+  onClick: () => void;
 }
 
 interface Team {
@@ -12,26 +14,24 @@ interface Team {
   name: string;
 }
 
-interface RoomScreenProps {
-  playersData: Player[];
-  teamsData: Team[];
-  currentPlayerId: string; // Add a prop to identify the current player
-}
 
+
+const teamsData: Team[] = [{id:'1', name: 'Gold'},{id:'2', name: 'Silver'},{id:'3', name: 'Uranium'}]
 const RoomScreen: React.FC<RoomScreenProps> = ({
-  playersData,
-  teamsData,
-  currentPlayerId,
+  onClick
 }) => {
+  const { players: playersData } = usePlayers();
+  console.log(playersData)
   const [players, setPlayers] = useState<Player[]>(playersData);
+  const { currentPlayer, NumTeam} = useCurrentPlayer()
   const [waitingPlayers, setWaitingPlayers] = useState<Player[]>(
     playersData.filter((player) => !player.teamId)
   );
-  const [teams, ] = useState<Team[]>(teamsData);
+  
+  const [teams, ] = useState<Team[]>(teamsData.slice(0, Number(NumTeam)));  
   const [isNextEnabled, setIsNextEnabled] = useState(false);
 
   useEffect(() => {
-    // Enable "Next" button if all players are assigned to a team
     const allAssigned = players.every((player) => player.teamId !== null);
     setIsNextEnabled(allAssigned);
   }, [players]);
@@ -49,17 +49,16 @@ const RoomScreen: React.FC<RoomScreenProps> = ({
   };
 
   return (
-    <div className="room-screen">
-      <h1>Game Room</h1>
+    <RoomContainer>
+      <Title>Game Room</Title>
       
-      <div className="waiting-block">
-        <h2>Waiting Players</h2>
+      <WaitingBlock>
+        <WaitingTitle>Waiting Players</WaitingTitle>
         {waitingPlayers.map((player) => (
-          <div key={player.id}>
+          <PlayerItem key={player.id}>
             {player.name}
-            {/* Show the dropdown only for the current player */}
-            {player.id === currentPlayerId && (
-              <select
+            {player.name === currentPlayer && (
+              <TeamSelect
                 onChange={(e) => handleTeamSelect(player.id, e.target.value)}
                 defaultValue=""
               >
@@ -71,34 +70,34 @@ const RoomScreen: React.FC<RoomScreenProps> = ({
                     {team.name}
                   </option>
                 ))}
-              </select>
+              </TeamSelect>
             )}
-          </div>
+          </PlayerItem>
         ))}
-      </div>
+      </WaitingBlock>
 
-      <div className="team-blocks">
+      <TeamBlocks>
         {teams.map((team) => (
-          <div key={team.id} className="team-block">
-            <h2>{team.name}</h2>
-            <ul>
+          <TeamBlock key={team.id}>
+            <TeamTitle>{team.name}</TeamTitle>
+            <PlayerList>
               {players
                 .filter((player) => player.teamId === team.id)
                 .map((player) => (
-                  <li key={player.id}>{player.name}</li>
+                  <PlayerListItem key={player.id}>{player.name}</PlayerListItem>
                 ))}
-            </ul>
-          </div>
+            </PlayerList>
+          </TeamBlock>
         ))}
-      </div>
+      </TeamBlocks>
 
-      <button
+      <NextButton
         disabled={!isNextEnabled}
-        onClick={() => console.log("Proceeding to the next step")}
+        onClick={() => onClick()}
       >
         Next
-      </button>
-    </div>
+      </NextButton>
+    </RoomContainer>
   );
 };
 

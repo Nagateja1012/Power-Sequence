@@ -1,20 +1,14 @@
 
 import React, { useState } from 'react';
 
-import {  FormGroup, GameFormContainer, GameFormStyled, Input, Label, ModeToggle, Select, SubmitButton, ToggleButton } from './lobby.styles';
+import {  FormGroup, GameFormContainer, GameFormStyled, Input, Label, ModeToggle, Select, StyledTitle, SubmitButton, ToggleButton } from './lobby.styles';
+import { GameFormData } from '../models/model';
 
 interface GameFormProps {
   onSubmit: (formData: GameFormData) => void;
 }
 
-interface GameFormData {
-  gameName: string;
-  numPlayers: string;
-  numTeams: string;
-  roomId: string;
-  roomPassword: string;
-  isCreate: boolean;
-}
+
 
 const GameForm: React.FC<GameFormProps> = ({ onSubmit }) => {
   const [formData, setFormData] = useState<GameFormData>({
@@ -48,7 +42,9 @@ const GameForm: React.FC<GameFormProps> = ({ onSubmit }) => {
 
   return (
     <GameFormContainer>
-      <ModeToggle>
+     
+<StyledTitle>Power Sequence</StyledTitle>    
+        <ModeToggle>
         <ToggleButton 
  
           onClick={() => toggleMode(true)}
