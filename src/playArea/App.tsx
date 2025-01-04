@@ -28,6 +28,10 @@ import { useCards } from "../GameScreens/CardSelect/CardSelect.context";
 import { useCurrentPlayer } from "../GameScreens/Room/player.context";
 import GameForm from "../GameScreens/lobby/lobby.component";
 import RoomScreen from "../GameScreens/Room/Room.component";
+import GameResult from "../GameScreens/GameEnd/GameEnd.component";
+import SuggestionText from "../GameScreens/Suggestion/Suggestion.component";
+import { useSuggestion } from "../GameScreens/Suggestion/Suggestion.context";
+import { useTurn } from "../Deck/deck.context";
 
 
 
@@ -180,7 +184,10 @@ function App() {
   const [currentScreen, setCurrentScreen] = useState("game");
   const {images, setImages} = usePlayerHand();
   const {  setdropCard, setDropCardNum} = useCards();
- 
+   const {
+          setSuggestion,
+           } = useSuggestion()
+ const {isYourTurn, setIsTurnCompleted, isTurnCompleted} =useTurn()
 
   const handleGameFormSubmit = (formData: GameFormData) => {
     GameLobbyDataService(formData);
@@ -194,8 +201,11 @@ function App() {
   };
   RoomScreenReadService();
  const handleDeck = () => {
+  if(isYourTurn){
   console.log("deck clicked");
   setImages([...images, 'ERASE']);
+  setIsTurnCompleted(true)
+  }
   }
 
 
@@ -234,13 +244,16 @@ function App() {
           <CardPlayed  />
           <ClaimButton
             onClick={() => {
+              if(isYourTurn){
               setIsSelectionActive("Claim")
-            }}
+              setSuggestion('2')
+
+            }}}
           >
             Claim
           </ClaimButton>
-          <Score>
-            <button
+         {} <Score>
+            <button disabled={!isTurnCompleted}
               onClick={() => {
                 
                     setdropCard(true);
@@ -257,6 +270,8 @@ function App() {
           <CardSelect />
         </div>
       )}
+      <GameResult ></GameResult>
+      <SuggestionText></SuggestionText>
     </PlayArea>
   );
 }

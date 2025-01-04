@@ -9,6 +9,9 @@ import { AlterCards, GrabCards } from '../Services/Service.Read';
 import { useCards } from '../GameScreens/CardSelect/CardSelect.context';
 import { useGrab } from '../Player/player.context';
 import { DropCardSend, GrabCardsSend, reverseCard, Skipcard } from '../Services/Service.Send';
+import { useAnimation } from '../GameAnimations/animation.context';
+import { useSuggestion } from '../GameScreens/Suggestion/Suggestion.context';
+import { useTurn } from '../Deck/deck.context';
 
 interface ImageGalleryProps {
   images: string[];
@@ -23,6 +26,9 @@ const ImageGallery: React.FC<ImageGalleryProps> = () => {
   const {images, setImages} = usePlayerHand();
   const { setCards, setDisplay, dropCard, setdropCard,DropCardNum, setDropCardNum} = useCards()
    const { setGrab, setplayerName, playerName, setgrabbedCard} = useGrab()
+   const { setaniamtionDisplay, setAnimationName} = useAnimation()
+   const {setSuggestion} = useSuggestion()
+   const {isYourTurn, setIsTurnCompleted} =useTurn()
 
   // Reset scroll position when images change
   useEffect(() => {
@@ -59,10 +65,14 @@ const ImageGallery: React.FC<ImageGalleryProps> = () => {
 ];  
 
 const HandleCard = (image: string, index:number) =>{
-
+  if(!isYourTurn){
+    return
+  }
+  setIsTurnCompleted(true)
   setImages(images.filter((_, i) => i !== index))  
   setPlayedCard(image)
   if(dropCard){
+    
     if(image === 'DROP'){
       DropCardSend(DropCardNum+1);
       setDropCardNum(0)
@@ -74,21 +84,32 @@ const HandleCard = (image: string, index:number) =>{
   } else {
 
   if(allcardvalues.includes(image)) {
+    setSuggestion('1')
     setIsSelectionActive('Place');
     setCardValue(image)
+    
   }
   else{
     //power
     switch (image) {
       case 'ALTER':
+        setAnimationName('alterfuture')
+        setaniamtionDisplay(true)
         AlterCards();
-        setDisplay(true);
+        setTimeout(() => {
+          setDisplay(true)}, 2000) ;
     setCards(['R1','ALTER','B9','G5'])
         break;
       case 'DROP':
+        
         DropCardSend(1);
+        setAnimationName('drop')
+        setaniamtionDisplay(true)
         break;
       case 'GRAB':
+        setSuggestion('3')
+        setAnimationName('grab')
+        setaniamtionDisplay(true)
         setGrab(true)
         GrabCardsSend(playerName)
         setCards(['back','back','back','back'])
@@ -96,18 +117,31 @@ const HandleCard = (image: string, index:number) =>{
         setplayerName("")
         break;
       case 'SKIP':
+        setAnimationName('skip')
+        setaniamtionDisplay(true)
         Skipcard()
         break;
       case 'REVERSE':
+        setAnimationName('reverse')
+        setaniamtionDisplay(true)
         reverseCard();
         break;
       case 'ERASE':
+        setSuggestion('7')
+        setAnimationName('eraser')
+        setaniamtionDisplay(true)
         setIsSelectionActive("Erase");
       break;
       case 'JOKER': 
+      setSuggestion('6')
+      setAnimationName('joker')
+        setaniamtionDisplay(true)
         setIsSelectionActive("Joker");  
         break;
       case 'DESTROY':
+        setSuggestion('4')
+        setAnimationName('explosion')
+        setaniamtionDisplay(true)
         setIsSelectionActive('Destroy');
         break;
     }

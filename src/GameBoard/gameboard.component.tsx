@@ -101,7 +101,7 @@ const GameBoard: React.FC<GameBoardProps> = ({ inputData }) => {
 
     
     if (grid[row][col].value !== -1) {
-        CoinSound();
+       
         const newGrid = grid.map((row) => [...row]);
         if(isSelectionActive === 'Erase' && grid[row][col].hasIcon === true) {
           newGrid[row][col] = {
@@ -114,6 +114,7 @@ const GameBoard: React.FC<GameBoardProps> = ({ inputData }) => {
                   && ((grid[row][col].color === getColor(CardValue.substring(0,1))
                   && grid[row][col].value === Number(CardValue.substring(1))) || isSelectionActive === 'Joker'  )
                   && grid[row][col].hasIcon === false) { // Fixed parenthesis
+                    CoinSound();
           console.log('placing')
           newGrid[row][col] = {
             ...newGrid[row][col],

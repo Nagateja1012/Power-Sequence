@@ -3,9 +3,9 @@
 import { AnimationDiv } from "./animation.styles";
 import Lottie from "lottie-react"
 
-import { useState } from "react";
 import AnimationLoader from "../AssetsLoader/animationLoader.component";
 import { alterSound, DropSound,  explosionSound, grabSound, jokerSound, reverseSound} from "../GameSounds/SoundEffects.component";
+import { useAnimation } from "./animation.context";
 
 
 interface AnimationProps {
@@ -14,7 +14,8 @@ interface AnimationProps {
 
 
 
-const Animation: React.FC<AnimationProps> =  ({ animationName }) => {
+const Animation: React.FC<AnimationProps> =  () => {
+  const {animationName ,aniamtionDisplay, setaniamtionDisplay, setAnimationName} = useAnimation()
 
   switch (animationName) {
     case "drop":
@@ -43,15 +44,16 @@ const Animation: React.FC<AnimationProps> =  ({ animationName }) => {
       break;
   }
   
-  const [display, setDisplay] = useState(true);
-
+  
+  
   return (
-    <AnimationDiv display={display}>
+    <AnimationDiv display={aniamtionDisplay}>
       <Lottie 
-        animationData={AnimationLoader({src: import.meta.env.VITE_ANIMATION_URL+animationName+'.json'})}
+        animationData={animationName !== '' ? AnimationLoader({src: import.meta.env.VITE_ANIMATION_URL+animationName+'.json'}) : ''}
         loop={false}
         onComplete={() => {console.log('done')
-            setDisplay(false);
+            setaniamtionDisplay(false);
+            setAnimationName('')
         }}
            autoplay
         style={{ height: "300px", width: "300px" }}
