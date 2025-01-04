@@ -32,7 +32,7 @@ export const CardDownSound = async () => {
 export const CoinSound = async () => {
   const sound = new Howl({
     src: [await loadAudio({src: import.meta.env.VITE_AUDIO_URL+'coinPlace.mp3'})],
-    volume: 0.1,
+    volume: 0.2,
     html5: true,
   });
   sound.play();

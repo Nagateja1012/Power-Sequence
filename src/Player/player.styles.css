@@ -1,0 +1,26 @@
+.Player {
+    position: absolute;
+    width: 100px;
+    height: 50px;
+    text-align: center;
+   
+  }
+  
+  /* Individual player positioning */
+  .Player1 { bottom: 35%; left: 5%; }
+  .Player2 { bottom: 50%; left: 5%; }
+  .Player3 { bottom: 65%; left: 5%; }
+  .Player4 { bottom: 80%; left: 5%; }
+  
+  
+  
+  .Player5 { top: 2%; left: 20%;  }
+  .Player6 { top: 2%; left: 35%; }
+  .Player7 { top: 2%; left: 50%; }
+  .Player8 { top: 2%; left: 65%;  }
+  
+  .Player9 { bottom: 35%; right: 5%; }
+  .Player10 { bottom: 50%; right: 5%; }
+  .Player11 { bottom: 65%; right: 5%; }
+  .Player12 { bottom: 80%; right: 5%; }
+  

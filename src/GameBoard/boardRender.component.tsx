@@ -1,10 +1,7 @@
 import React from 'react';
-import silver from '../assets/coins/silver.png';
-import gold from '../assets/coins/gold.png';
-import blue from '../assets/coins/blue.png';
-import star from '../assets/star.png';
 import { GridContainer, Cell, CellNumber, IconImage } from './styles';
 import { CellData } from './types';
+import ImageLoader from '../AssetsLoader/imageLoader.component';
 
 
 
@@ -22,6 +19,9 @@ const BoardRender: React.FC<BoardRenderProps> = ({
   onCellClick 
 }) => {
 
+
+ 
+
 return (
     <GridContainer>
       {grid.map((row, rowIndex) => 
@@ -36,10 +36,13 @@ return (
               <CellNumber>{cell.value}</CellNumber>
             )}
             {cell.hasIcon && corners.some(([r, c]) => r === rowIndex && c === colIndex) && (
-              <IconImage src={star} alt="coin" />
+              <ImageLoader StyledImg={IconImage} src={import.meta.env.VITE_ASSETS_URL+'star.png'}  /> 
             )}
             {cell.hasIcon && !corners.some(([r, c]) => r === rowIndex && c === colIndex) && (
-              <IconImage src={cell.player === 'blue' ? blue : cell.player === 'gold' ? gold : silver} alt="coin" />
+              <ImageLoader StyledImg={IconImage}
+              src={cell.player === 'blue' ?  import.meta.env.VITE_COINS_URL+'blue.png' : cell.player === 'gold' ? import.meta.env.VITE_COINS_URL+'gold.png' : import.meta.env.VITE_COINS_URL+'silver.png'}  />
+
+              
             )}
           </Cell>
         ))

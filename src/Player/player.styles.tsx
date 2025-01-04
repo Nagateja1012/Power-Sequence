@@ -1,5 +1,6 @@
 // Styled components
 import styled from '@emotion/styled';
+import "./player.styles.css"
 
 export const PlayerContainer = styled.div`
   display: flex;
@@ -27,3 +28,4 @@ export const PlayerName = styled.div<{isPlaying: boolean, group: number}>`
     100% { transform: scale(1); }
   }
 `
+
