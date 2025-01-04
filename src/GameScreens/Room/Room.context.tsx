@@ -1,5 +1,6 @@
 import { createContext, useContext, useState } from "react";
-import { Player } from "../models/model";
+import { Player } from "../../models/model";
+
 
 // Create a context to manage players state
 const PlayersContext = createContext<{

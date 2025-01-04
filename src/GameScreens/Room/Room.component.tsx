@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { Player } from "../models/model";
+
 import { usePlayers } from "./Room.context";
 import { useCurrentPlayer } from "./player.context";
 import { NextButton, PlayerItem, PlayerList, PlayerListItem, RoomContainer, TeamBlock, TeamBlocks, TeamSelect, TeamTitle, Title, WaitingBlock, WaitingTitle } from "./Room.Styles";
+import { Player } from "../../models/model";
 
 
 interface RoomScreenProps {
