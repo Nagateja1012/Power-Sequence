@@ -4,22 +4,23 @@ import React, { useState } from 'react';
 import {  FormGroup, GameFormContainer, GameFormStyled, Input, Label, ModeToggle, Select, StyledTitle, SubmitButton, ToggleButton } from './lobby.styles';
 import { GameFormData } from '../../models/model';
 
-
-
 interface GameFormProps {
   onSubmit: (formData: GameFormData) => void;
 }
 
-
-
 const GameForm: React.FC<GameFormProps> = ({ onSubmit }) => {
+  const generateRandomUsername = () => {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    return Array.from({length: 6}, () => chars.charAt(Math.floor(Math.random() * chars.length))).join('');
+  };
+
   const [formData, setFormData] = useState<GameFormData>({
     playerName: '',
     numPlayers: '2',
     numTeams: '2',
     roomId: '',
     roomPassword: '',
-    PlayerUseName: '',
+    PlayerUseName: generateRandomUsername(),
     isCreate: true
   });
 
@@ -77,19 +78,6 @@ const GameForm: React.FC<GameFormProps> = ({ onSubmit }) => {
             required
             
             placeholder="Enter your name"
-          />
-        </FormGroup>
-        <FormGroup>
-          <Label htmlFor="PlayerUseName">Player Username</Label>
-          <Input
-            type="text"
-            id="PlayerUseName"
-            name="PlayerUseName"
-            value={formData.PlayerUseName}
-            onChange={handleChange}
-            required
-            
-            placeholder="Enter your Username"
           />
         </FormGroup>
 

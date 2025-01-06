@@ -14,7 +14,7 @@ import {
 import CardSelect from "../GameScreens/CardSelect/CardSelect.component";
 import { useSelection } from "../GameBoard/gameboard.context";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { GameLobbyDataService } from "../Services/Service.Send";
 import { GameFormData } from "../models/model";
 import { RoomScreenReadService } from "../Services/Service.Read";
@@ -95,14 +95,14 @@ function App() {
   ];
   const samplePlayers = [
     {
-      name: "John Smith",
+      name: "John Smith", 
       playerNumber: 1,
       group: 1,
       isPlaying: true,
     },
     {
       name: "Sarah Johnson",
-      playerNumber: 2,
+      playerNumber: 2, 
       group: 2,
       isPlaying: false,
     },
@@ -173,18 +173,28 @@ function App() {
   const [currentScreen, setCurrentScreen] = useState("gameForm");
   const { images, setImages } = usePlayerHand();
   const { setdropCard, setDropCardNum } = useCards();
-  const { setSuggestion } = useSuggestion();
+  const { setSuggestion, setSuggestionType } = useSuggestion();
   const { isYourTurn, setIsTurnCompleted } = useTurn();
   const { sendMessage, messages } = useWebSocket();
+
+  useEffect(() => {
+    if (messages[0]?.content?.currentScreen) {
+      setCurrentScreen(messages[0].content.currentScreen);
+    }
+    if(messages[0]?.type === 'error'){
+      setSuggestionType('error')
+        setSuggestion(messages[0]?.content?.error)
+    }
+      
+  }, [messages]);
 
   const handleGameFormSubmit = (formData: GameFormData) => {
     GameLobbyDataService(formData);
     sendMessage( { action: "createGame", Message: formData })
     setCurrentPlayer(formData.PlayerUseName);
-    setCurrentScreen("roomScreen");
   };
   const handleRoomScreenComplete = () => {
-    setCurrentScreen("game");
+
   };
   RoomScreenReadService();
   const handleDeck = () => {
@@ -231,7 +241,7 @@ function App() {
               sendMessage({ action: "sendMove", Message: { hello: "hi" } });
               if (isYourTurn) {
                 setIsSelectionActive("Claim");
-                setSuggestion("2");
+                setSuggestion("Select the Sequence to claim");
               }
             }}
           >
@@ -258,7 +268,7 @@ function App() {
       )}
       <GameResult></GameResult>
       <SuggestionText></SuggestionText>
-      <h1>{messages[0]?.content?.error} </h1>
+      <h1>{} </h1>
     </PlayArea>
   );
 }

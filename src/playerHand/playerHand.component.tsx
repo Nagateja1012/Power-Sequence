@@ -84,7 +84,7 @@ const HandleCard = (image: string, index:number) =>{
   } else {
 
   if(allcardvalues.includes(image)) {
-    setSuggestion('1')
+    setSuggestion("Place a coin on the board")
     setIsSelectionActive('Place');
     setCardValue(image)
     
@@ -107,7 +107,7 @@ const HandleCard = (image: string, index:number) =>{
         setaniamtionDisplay(true)
         break;
       case 'GRAB':
-        setSuggestion('3')
+        setSuggestion("Select a player to grab a card")
         setAnimationName('grab')
         setaniamtionDisplay(true)
         setGrab(true)
@@ -127,19 +127,19 @@ const HandleCard = (image: string, index:number) =>{
         reverseCard();
         break;
       case 'ERASE':
-        setSuggestion('7')
+        setSuggestion("Remove a coin from the board that is not in a claimed sequence")
         setAnimationName('eraser')
         setaniamtionDisplay(true)
         setIsSelectionActive("Erase");
       break;
       case 'JOKER': 
-      setSuggestion('6')
+      setSuggestion("Place a coin in any non-filled cell")
       setAnimationName('joker')
         setaniamtionDisplay(true)
         setIsSelectionActive("Joker");  
         break;
       case 'DESTROY':
-        setSuggestion('4')
+        setSuggestion("Select the Sequence to destroy")
         setAnimationName('explosion')
         setaniamtionDisplay(true)
         setIsSelectionActive('Destroy');

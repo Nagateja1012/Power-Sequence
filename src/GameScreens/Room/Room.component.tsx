@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useCurrentPlayer } from "./player.context";
-import { NextButton, PlayerItem, PlayerList, PlayerListItem, RoomContainer, RoomIdD, TeamBlock, TeamBlocks, TeamSelect, TeamTitle, Title, WaitingBlock, WaitingTitle } from "./Room.Styles";
+import { ChangeButton, NextButton, PlayerItem, PlayerList, PlayerListItem, RoomContainer, RoomIdD, TeamBlock, TeamBlocks, TeamSelect, TeamTitle, Title, WaitingBlock, WaitingTitle } from "./Room.Styles";
 import { Player } from "../../models/model";
 import { useWebSocket } from "../../Services/websocket.services";
 
@@ -23,6 +23,7 @@ const teamsData: Team[] = [
 const RoomScreen: React.FC<RoomScreenProps> = ({ onClick }) => {
   const { messages, sendMessage } = useWebSocket();
   const [players, setPlayers] = useState<Player[]>([]);
+  const [remainingPlayers, setRemainingPlayers] = useState<string>('');
 
   const [waitingPlayers, setWaitingPlayers] = useState<Player[]>([]);
   const [teams, setTeams] = useState<Team[]>([]);
@@ -31,7 +32,7 @@ const RoomScreen: React.FC<RoomScreenProps> = ({ onClick }) => {
 
   useEffect(() => {
     if (messages?.[0]?.type === 'PlayerData') {
-      const { roomId, numTeams, players: playersData } = messages[0].content;
+      const { roomId, numTeams, players: playersData, playersLeft } = messages[0].content;
 
       if (roomId && RoomId !== roomId) {
         setRoomId(roomId);
@@ -45,7 +46,9 @@ const RoomScreen: React.FC<RoomScreenProps> = ({ onClick }) => {
         setPlayers(playersData);
         setWaitingPlayers(playersData.filter((player: Player) => !player.teamId));
       }
-    }
+
+      setRemainingPlayers(playersLeft );
+    } 
   }, [messages, RoomId, setRoomId]);
 
   useEffect(() => {
@@ -53,8 +56,8 @@ const RoomScreen: React.FC<RoomScreenProps> = ({ onClick }) => {
     const allTeamsHavePlayers = teams.every(team => 
       players.some(player => player.teamId === team.id)
     );
-    setIsNextEnabled(allAssigned && allTeamsHavePlayers);
-  }, [players, teams]);
+    setIsNextEnabled((allAssigned && allTeamsHavePlayers) && remainingPlayers.toString() === '0');
+  }, [players, teams, remainingPlayers]);
 
   const handleTeamSelect = (playerId: string, teamId: string) => {
     setPlayers(prevPlayers =>
@@ -78,11 +81,34 @@ const RoomScreen: React.FC<RoomScreenProps> = ({ onClick }) => {
     });
   };
 
+  const handleChangeTeam = (playerId: string) => {
+    setPlayers(prevPlayers =>
+      prevPlayers.map(player =>
+        player.playerId === playerId ? { ...player, teamId: null } : player
+      )
+    );
+
+    const playerToMove = players.find(p => p.playerId === playerId);
+    if (playerToMove) {
+      setWaitingPlayers(prev => [...prev, playerToMove]);
+    }
+
+    sendMessage({
+      action: "createGame",
+      Message: {
+        teamSelect: true,
+        playerId,
+        teamId: null,
+        roomId: messages[0]?.content?.roomId
+      }
+    });
+  };
+
   return (
     <RoomContainer>
       <Title>Game Room</Title>
       <RoomIdD>Room ID: {RoomId || ""}</RoomIdD>
-
+      <RoomIdD>Players to join: {remainingPlayers}</RoomIdD>
       <WaitingBlock>
         <WaitingTitle>Waiting Players</WaitingTitle>
         {waitingPlayers.map(player => (
@@ -113,6 +139,13 @@ const RoomScreen: React.FC<RoomScreenProps> = ({ onClick }) => {
                 .map(player => (
                   <PlayerListItem key={player.playerId}>
                     {player.playerName}
+                    {player.playerId === currentPlayer && (
+                      <ChangeButton 
+
+  onClick={() => handleChangeTeam(player.playerId)}
+>
+  Change Team
+</ChangeButton>                    )}
                   </PlayerListItem>
                 ))}
             </PlayerList>
