@@ -1,14 +1,15 @@
 export interface GameFormData {
-  gameName: string;
+  playerName: string;
     numPlayers: string;
     numTeams: string;
     roomId: string;
     roomPassword: string;
     isCreate: boolean;
+    PlayerUseName:string;
   }
 
  export interface Player {
-    id: string;
-    name: string;
-    teamId: string | null; // Null if the player hasn't selected a team
+  playerId: string;
+  teamId: string | null;
+  playerName: string
   }

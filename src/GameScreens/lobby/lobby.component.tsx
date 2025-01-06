@@ -5,6 +5,7 @@ import {  FormGroup, GameFormContainer, GameFormStyled, Input, Label, ModeToggle
 import { GameFormData } from '../../models/model';
 
 
+
 interface GameFormProps {
   onSubmit: (formData: GameFormData) => void;
 }
@@ -13,11 +14,12 @@ interface GameFormProps {
 
 const GameForm: React.FC<GameFormProps> = ({ onSubmit }) => {
   const [formData, setFormData] = useState<GameFormData>({
-    gameName: '',
+    playerName: '',
     numPlayers: '2',
     numTeams: '2',
     roomId: '',
     roomPassword: '',
+    PlayerUseName: '',
     isCreate: true
   });
 
@@ -37,7 +39,8 @@ const GameForm: React.FC<GameFormProps> = ({ onSubmit }) => {
   const toggleMode = (isCreate: boolean) => {
     setFormData(prev => ({
       ...prev,
-      isCreate
+      isCreate,
+      roomId: isCreate ? '' : prev.roomId
     }));
   };
 
@@ -64,16 +67,29 @@ const GameForm: React.FC<GameFormProps> = ({ onSubmit }) => {
 
       <GameFormStyled onSubmit={handleSubmit} >
         <FormGroup>
-          <Label htmlFor="gameName">Player Name</Label>
+          <Label htmlFor="playerName">Player Name</Label>
           <Input
             type="text"
-            id="gameName"
-            name="gameName"
-            value={formData.gameName}
+            id="playerName"
+            name="playerName"
+            value={formData.playerName}
             onChange={handleChange}
             required
             
             placeholder="Enter your name"
+          />
+        </FormGroup>
+        <FormGroup>
+          <Label htmlFor="PlayerUseName">Player Username</Label>
+          <Input
+            type="text"
+            id="PlayerUseName"
+            name="PlayerUseName"
+            value={formData.PlayerUseName}
+            onChange={handleChange}
+            required
+            
+            placeholder="Enter your Username"
           />
         </FormGroup>
 
@@ -118,18 +134,20 @@ const GameForm: React.FC<GameFormProps> = ({ onSubmit }) => {
           </>
         )}
 
-        <FormGroup>
-          <Label htmlFor="roomId">Room ID</Label>
-          <Input
-            type="text"
-            id="roomId"
-            name="roomId"
-            value={formData.roomId}
-            onChange={handleChange}
-            required
-            placeholder="Enter room ID"
-          />
-        </FormGroup>
+        {!formData.isCreate && (
+          <FormGroup>
+            <Label htmlFor="roomId">Room ID</Label>
+            <Input
+              type="text" 
+              id="roomId"
+              name="roomId"
+              value={formData.roomId}
+              onChange={handleChange}
+              required
+              placeholder="Enter room ID"
+            />
+          </FormGroup>
+        )}
 
         <FormGroup>
           <Label htmlFor="roomPassword">Room Password</Label>

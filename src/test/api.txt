@@ -1,0 +1,38 @@
+when create 
+
+target is send message to single player, send message to team, send message to three teams, sen message to all 
+
+{
+    "playerName": "s",
+    "numPlayers": "2",
+    "numTeams": "2",
+    "roomId": "sa",
+    "roomPassword": "h",
+    "PlayerUseName": "teja123",
+    "isCreate": true
+}
+
+
+connection table 
+roomId:
+playerId : 
+clientID:
+teamid:
+
+room table
+roomid :  
+roompas : 
+numplayers: 
+numTeam: 
+status: waiting, ingame, finished
+
+
+
+
+gameState table:
+roomid
+gameArray
+deck of cards
+current player
+order of the player 
+sequences

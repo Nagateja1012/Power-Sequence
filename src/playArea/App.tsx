@@ -1,9 +1,6 @@
 import GameBoard from "../GameBoard/gameboard.component";
 import ImageGallery from "../playerHand/playerHand.component";
-import {
-  CreatePlayerElements,
-  
-} from "../Player/player.component";
+import { CreatePlayerElements } from "../Player/player.component";
 import CardPlayed from "../PlayedCard/PlayedCard.component";
 import ImageLoader from "../AssetsLoader/imageLoader.component";
 import {
@@ -17,11 +14,10 @@ import {
 import CardSelect from "../GameScreens/CardSelect/CardSelect.component";
 import { useSelection } from "../GameBoard/gameboard.context";
 
-
-import {   useState } from "react";
+import { useState } from "react";
 import { GameLobbyDataService } from "../Services/Service.Send";
 import { GameFormData } from "../models/model";
-import {  RoomScreenReadService } from "../Services/Service.Read";
+import { RoomScreenReadService } from "../Services/Service.Read";
 
 import { usePlayerHand } from "../playerHand/playerHand.context";
 import { useCards } from "../GameScreens/CardSelect/CardSelect.context";
@@ -32,9 +28,7 @@ import GameResult from "../GameScreens/GameEnd/GameEnd.component";
 import SuggestionText from "../GameScreens/Suggestion/Suggestion.component";
 import { useSuggestion } from "../GameScreens/Suggestion/Suggestion.context";
 import { useTurn } from "../Deck/deck.context";
-
-
-
+import { useWebSocket } from "../Services/websocket.services";
 
 function App() {
   const inputData = [
@@ -173,41 +167,33 @@ function App() {
       isPlaying: false,
     },
   ];
-  
-
-
-
-
 
   const { setIsSelectionActive } = useSelection();
-  const { setCurrentPlayer, setNumTeam} = useCurrentPlayer()
-  const [currentScreen, setCurrentScreen] = useState("game");
-  const {images, setImages} = usePlayerHand();
-  const {  setdropCard, setDropCardNum} = useCards();
-   const {
-          setSuggestion,
-           } = useSuggestion()
- const {isYourTurn, setIsTurnCompleted, isTurnCompleted} =useTurn()
+  const { setCurrentPlayer } = useCurrentPlayer();
+  const [currentScreen, setCurrentScreen] = useState("gameForm");
+  const { images, setImages } = usePlayerHand();
+  const { setdropCard, setDropCardNum } = useCards();
+  const { setSuggestion } = useSuggestion();
+  const { isYourTurn, setIsTurnCompleted } = useTurn();
+  const { sendMessage, messages } = useWebSocket();
 
   const handleGameFormSubmit = (formData: GameFormData) => {
     GameLobbyDataService(formData);
-    
-    setCurrentPlayer(formData.gameName)
-    setNumTeam(formData.numTeams)
+    sendMessage( { action: "createGame", Message: formData })
+    setCurrentPlayer(formData.PlayerUseName);
     setCurrentScreen("roomScreen");
   };
   const handleRoomScreenComplete = () => {
     setCurrentScreen("game");
   };
   RoomScreenReadService();
- const handleDeck = () => {
-  if(isYourTurn){
-  console.log("deck clicked");
-  setImages([...images, 'ERASE']);
-  setIsTurnCompleted(true)
-  }
-  }
-
+  const handleDeck = () => {
+    if (isYourTurn) {
+      console.log("deck clicked");
+      setImages([...images, "ERASE"]);
+      setIsTurnCompleted(true);
+    }
+  };
 
   return (
     <PlayArea>
@@ -215,9 +201,7 @@ function App() {
         <GameForm onSubmit={handleGameFormSubmit} />
       )}
       {currentScreen === "roomScreen" && (
-        <RoomScreen
-          onClick={handleRoomScreenComplete}
-        ></RoomScreen>
+        <RoomScreen onClick={handleRoomScreenComplete}></RoomScreen>
       )}
 
       {currentScreen === "game" && (
@@ -241,23 +225,25 @@ function App() {
               StyledImg={DeckImage}
             />
           </Deck>
-          <CardPlayed  />
+          <CardPlayed />
           <ClaimButton
             onClick={() => {
-              if(isYourTurn){
-              setIsSelectionActive("Claim")
-              setSuggestion('2')
-
-            }}}
+              sendMessage({ action: "sendMove", Message: { hello: "hi" } });
+              if (isYourTurn) {
+                setIsSelectionActive("Claim");
+                setSuggestion("2");
+              }
+            }}
           >
             Claim
           </ClaimButton>
-         {} <Score>
-            <button disabled={!isTurnCompleted}
+          {}{" "}
+          <Score>
+            <button
+              // disabled={!isTurnCompleted}
               onClick={() => {
-                
-                    setdropCard(true);
-                    setDropCardNum(2);
+                setdropCard(true);
+                setDropCardNum(2);
                 // setIsSelectionActive("Erase");
               }}
             >
@@ -270,8 +256,9 @@ function App() {
           <CardSelect />
         </div>
       )}
-      <GameResult ></GameResult>
+      <GameResult></GameResult>
       <SuggestionText></SuggestionText>
+      <h1>{messages[0]?.content?.error} </h1>
     </PlayArea>
   );
 }
