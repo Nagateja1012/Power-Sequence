@@ -1,13 +1,15 @@
 
+import { useEffect, useState } from "react";
 import { useCards } from "../GameScreens/CardSelect/CardSelect.context";
 import { useGrab } from "./player.context";
 import { PlayerContainer, PlayerImage, PlayerName } from "./player.styles";
+import { useWebSocket } from "../Services/websocket.services";
 
 // Types for player data
 interface PlayerData {
-  name: string;
-  playerNumber: number;
-  group: 1 | 2 | 3;
+  playerId:string;
+   teamId:string;
+    name: string;
 }
 
 
@@ -15,9 +17,19 @@ interface PlayerData {
 let currentPlayingPlayer: string | null = null;
 
 // Function to create player elements from array
-export function CreatePlayerElements({players}: {players: PlayerData[]}): JSX.Element[] {
+export function CreatePlayerElements(): JSX.Element[] {
   const {grab, setGrab, setplayerName} = useGrab()
    const {  setDisplay} = useCards()
+   const [players, setPlayers]= useState<PlayerData[]>([]);
+     const {  messages } = useWebSocket();
+   
+     useEffect(() => {
+       if (messages[0]?.content?.currentScreen) {
+        setPlayers(messages[0].content.players);
+       }
+       
+         
+     }, [messages]);
   const handlePlayeClick = (name:string) =>{
    if(grab){
     setplayerName(name);
@@ -27,15 +39,15 @@ export function CreatePlayerElements({players}: {players: PlayerData[]}): JSX.El
 
   }
 
-  return players.map(player => (
-    <PlayerContainer className={`Player Player${player.playerNumber}`} onClick={()=> handlePlayeClick(player.name)}>
+  return players.map((player, index) => (
+    <PlayerContainer className={`Player Player${index + 1}`} onClick={()=> handlePlayeClick(player.name)}>
       <PlayerImage 
-        src={import.meta.env.VITE_PROFILE_URL+`P${player.playerNumber}.png`}
+        src={import.meta.env.VITE_PROFILE_URL+`P${index + 1}.png`}
         alt={player.name}
       />
       <PlayerName 
         isPlaying={false}
-        group={player.group}
+        group={player.teamId}
         data-player={player.name}
       >
         {player.name}

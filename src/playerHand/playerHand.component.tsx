@@ -12,6 +12,7 @@ import { DropCardSend, GrabCardsSend, reverseCard, Skipcard } from '../Services/
 import { useAnimation } from '../GameAnimations/animation.context';
 import { useSuggestion } from '../GameScreens/Suggestion/Suggestion.context';
 import { useTurn } from '../Deck/deck.context';
+import { useWebSocket } from '../Services/websocket.services';
 
 interface ImageGalleryProps {
   images: string[];
@@ -29,6 +30,15 @@ const ImageGallery: React.FC<ImageGalleryProps> = () => {
    const { setaniamtionDisplay, setAnimationName} = useAnimation()
    const {setSuggestion} = useSuggestion()
    const {isYourTurn, setIsTurnCompleted} =useTurn()
+    const {  messages } = useWebSocket();
+   
+     useEffect(() => {
+       if (messages[0]?.type === 'PLAYER_HAND') {
+          setImages(messages[0]?.content?.cards)
+       }
+       
+         
+     }, [messages]);
 
   // Reset scroll position when images change
   useEffect(() => {

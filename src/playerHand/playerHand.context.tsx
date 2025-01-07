@@ -10,7 +10,7 @@ const PlayerHandContext = createContext<{
 
 // Selection provider component to wrap application
 export const PlayerHandProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [images, setImages] = useState<string[]>(["DESTROY", "ALTER", "R3", "B8", "DROP", "G0", "GRAB", "B5", "DROP","JOKER","ERASE","SKIP","REVERSE"]);
+  const [images, setImages] = useState<string[]>([]);
 
 
   return (

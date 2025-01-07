@@ -134,7 +134,7 @@ const createNewRoom = async (message, connections) => {
       numTeam: message.Message.numTeams,
       playersLeft: message.Message.numPlayers - 1,
       status: "waiting",
-      ttl: TTL,
+      ttl: Math.floor(Date.now() / 1000) + TTL,
       timestamp: new Date().toISOString(),
     },
   };

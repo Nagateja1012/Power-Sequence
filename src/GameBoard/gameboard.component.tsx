@@ -1,64 +1,33 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import BoardRender from "./boardRender.component";
 
-import { CellData, InputItem } from "./types";
+import { CellData } from "./types";
 import { getColor, arePointsInLine } from "./utils";
 import Animation from "../GameAnimations/animation.component";
 import { CoinSound } from "../GameSounds/SoundEffects.component";
 import { useSelection } from "./gameboard.context";
+import { useWebSocket } from "../Services/websocket.services";
 
 
-interface GameBoardProps {
-  inputData: InputItem[];
-}
-const GameBoard: React.FC<GameBoardProps> = ({ inputData }) => {
-  const initialGrid: CellData[][] = Array(8)
-    .fill(null)
-    .map(() =>
-      Array(8)
-        .fill(null)
-        .map(() => ({
-          value: -1,
-          color: "#ffffff",
-          hasIcon: false,
-        }))
-    );
 
-  // Fill grid with input data
-  let row = 0;
-  let inputIndex = 0;
+const GameBoard: React.FC = () => {
+
   const corners = [
     [0, 0],
     [0, 7],
     [7, 0],
     [7, 7],
   ];
-  while (row < 8) {
-    let col = 0;
-    while (col < 8) {
-      if (corners.some(([r, c]) => r === row && c === col)) {
-        initialGrid[row][col] = {
-          value: -1,
-          color: getColor("W"),
-          hasIcon: true,
-        };
-      } else if (inputIndex < inputData.length) {
-        const item = inputData[inputIndex];
-        initialGrid[row][col] = {
-          value: item.value,
-          color: getColor(item.color),
-          hasIcon: false,
-        };
-        inputIndex++;
-      }
-      col++;
-    }
-    row++;
-  }
-  // Set corner positions
 
-  const [grid, setGrid] = useState<CellData[][]>(initialGrid);
+   const { messages } = useWebSocket();
+   
+   useEffect(() => {
+     if (messages[0]?.type === 'GAME_START') {
+       setGrid(messages[0].content.board);
+     }
+   }, [messages]);
 
+  const [grid, setGrid] = useState<CellData[][]>([]);
   const {isSelectionActive, setIsSelectionActive, CardValue, setCardValue} = useSelection();
   const [maxSelectionLimit, setMaxSelectionLimit] = useState(5);
   const [selectedCellIndex, setSelectedCellIndex] = useState<number[][]>([]);
@@ -69,7 +38,6 @@ const GameBoard: React.FC<GameBoardProps> = ({ inputData }) => {
 
 
   const handleCellClick = (row: number, col: number) => {
-
     if (isSelectionActive !== 'Erase' && isSelectionActive !== '' && isSelectionActive !== 'Place'  && isSelectionActive !== 'Joker' ) {
       if (
         !selectedCellIndex.some(([r, c]) => r === row && c === col) &&

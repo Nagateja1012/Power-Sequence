@@ -30,7 +30,8 @@ return (
             key={`${rowIndex}-${colIndex}`}
             backgroundColor={cell.color}
             isClicked={selectedCellIndex.some(([r,c]) => r === rowIndex && c === colIndex)}
-            onClick={() => onCellClick(rowIndex, colIndex)}
+            onClick={() => 
+               onCellClick(rowIndex, colIndex)}
           >
             {cell.value !== -1 && (
               <CellNumber>{cell.value}</CellNumber>
