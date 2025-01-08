@@ -1,9 +1,12 @@
 import styled from '@emotion/styled';
 
 
-export const SuggestionContainer = styled.div<{display:boolean, suggestiontype?: string}>`
-  background-color: ${props => props.suggestiontype === 'error' ? 'rgba(255, 0, 0, 0.85)' : 'rgba(23, 23, 23, 0.85)'}; 
-
+export const SuggestionContainer = styled.div<{displayProp:boolean, suggestiontype?: string}>`
+  background-color: ${props => 
+    props.suggestiontype === 'error' ? 'rgba(255, 0, 0, 0.85)' : 
+    props.suggestiontype === 'sequence' ? 'rgba(0, 255, 0, 0.85)' :
+    'rgba(23, 23, 23, 0.85)'
+  }; 
   text-align: center;
 
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
@@ -13,8 +16,8 @@ export const SuggestionContainer = styled.div<{display:boolean, suggestiontype?:
   top:10%;
   left:20%;
   zIndex: 1;
-  opacity: ${(props) => props.display ? 1 : 0};
-  visibility: ${(props) => props.display ? 'visible' : 'hidden'};
+  opacity: ${(props) => props.displayProp ? 1 : 0};
+  visibility: ${(props) => props.displayProp ? 'visible' : 'hidden'};
   transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
 `;
 

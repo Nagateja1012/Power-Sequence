@@ -38,7 +38,7 @@ export const PlayedCards = styled.div`
   transform: translateY(-50%);
 `;
 
-export const ClaimButton = styled.div`
+export const ClaimButton = styled.button`
   position: absolute;
   width: 100px;
   height: 50px;
@@ -49,9 +49,10 @@ export const ClaimButton = styled.div`
   line-height: 50px;
   right: 18%;
   top: 60%;
+  cursor: pointer;
 `;
 
-export const Score = styled.div`
+export const Score = styled.button`
   position: absolute;
   width: 100px;
   height: 50px;
@@ -62,6 +63,7 @@ export const Score = styled.div`
   line-height: 50px;
   left: 18%;
   top: 60%;
+  cursor: pointer;
 `;
   
 export const DeckImage = styled.img`

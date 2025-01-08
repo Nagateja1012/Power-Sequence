@@ -14,7 +14,7 @@ interface PlayerData {
 
 
 // State to track currently playing player
-let currentPlayingPlayer: string | null = null;
+// let currentPlayingPlayer: string | null = null;
 
 // Function to create player elements from array
 export function CreatePlayerElements(): JSX.Element[] {
@@ -24,7 +24,7 @@ export function CreatePlayerElements(): JSX.Element[] {
      const {  messages } = useWebSocket();
    
      useEffect(() => {
-       if (messages[0]?.content?.currentScreen) {
+       if (messages[0].type==="GAME_START" && messages[0]?.content?.players) {
         setPlayers(messages[0].content.players);
        }
        
@@ -40,13 +40,13 @@ export function CreatePlayerElements(): JSX.Element[] {
   }
 
   return players.map((player, index) => (
-    <PlayerContainer className={`Player Player${index + 1}`} onClick={()=> handlePlayeClick(player.name)}>
+    <PlayerContainer key={player.playerId} className={`Player Player${index + 1}`} onClick={()=> handlePlayeClick(player.name)}>
       <PlayerImage 
         src={import.meta.env.VITE_PROFILE_URL+`P${index + 1}.png`}
         alt={player.name}
       />
       <PlayerName 
-        isPlaying={false}
+        isPlaying={messages[0]?.content?.currentPlayer === player.playerId}
         group={player.teamId}
         data-player={player.name}
       >
@@ -56,22 +56,3 @@ export function CreatePlayerElements(): JSX.Element[] {
   ));
 }
 
-// Function to update playing state
-export function UpdatePlayingState(playerName: string): void {
-  // Remove animation from previous playing player
-  if (currentPlayingPlayer) {
-    const prevPlayer = document.querySelector(`[data-player="${currentPlayingPlayer}"]`);
-    if (prevPlayer) {
-      (prevPlayer as any).style.animation = 'none';
-      prevPlayer.setAttribute('isPlaying', 'false');
-    }
-  }
-
-  // Add animation to new playing player  
-  const newPlayer = document.querySelector(`[data-player="${playerName}"]`);
-  if (newPlayer) {
-    (newPlayer as any).style.animation = 'pulse 1s infinite';
-    newPlayer.setAttribute('isPlaying', 'true');
-  }
-  currentPlayingPlayer = playerName;
-}

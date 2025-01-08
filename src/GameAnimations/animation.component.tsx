@@ -47,7 +47,7 @@ const Animation: React.FC<AnimationProps> =  () => {
   
   
   return (
-    <AnimationDiv display={aniamtionDisplay}>
+    <AnimationDiv displayProp={aniamtionDisplay}>
       <Lottie 
         animationData={animationName !== '' ? AnimationLoader({src: import.meta.env.VITE_ANIMATION_URL+animationName+'.json'}) : ''}
         loop={false}

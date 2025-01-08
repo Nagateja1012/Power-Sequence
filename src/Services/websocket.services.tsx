@@ -19,12 +19,16 @@ interface MoveMessage {
 // Create a WebSocket context with proper typing
 const WebSocketContext = createContext<{
   sendMessage: (message: MoveMessage) => void;
+  draftMessage: (message: MoveMessage) => void;
+  sendDraft: () => void;
   messages: WebSocketMessage[];
+  draft: MoveMessage | null;
 } | null>(null);
 
 export const WebSocketProvider: React.FC<{children: React.ReactNode}> = ({ children }) => {
   const [socket, setSocket] = useState<WebSocket | null>(null);
   const [messages, setMessages] = useState<WebSocketMessage[]>([]);
+  const [draft, setDraft] = useState<MoveMessage | null>(null);
 
   useEffect(() => {
     // Replace with your AWS API Gateway WebSocket URL
@@ -69,8 +73,21 @@ export const WebSocketProvider: React.FC<{children: React.ReactNode}> = ({ child
     }
   };
 
+  const draftMessage = (message: MoveMessage): void => {
+    setDraft(message);
+  };
+
+  const sendDraft = (): void => {
+    if (draft) {
+      sendMessage(draft);
+      setDraft(null); 
+    } else {
+      console.error('No draft message available');
+    }
+  };
+
   return (
-    <WebSocketContext.Provider value={{ sendMessage, messages }}>
+    <WebSocketContext.Provider value={{ sendMessage, draftMessage, sendDraft, messages, draft }}>
       {children}
     </WebSocketContext.Provider>
   );

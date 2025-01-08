@@ -13,7 +13,7 @@ const CardSelect: React.FC = () => {
   const {images, setImages} = usePlayerHand();
      const { grabbedCard, setgrabbedCard} = useGrab()
   return (
-    <CardSelectContainer display={display}>
+    <CardSelectContainer displayProp={display}>
         <CardSelectHeader >Arrange and pick a card</CardSelectHeader>                
         <CardSelectGrid>
       {cards.map((imageName, index) => (

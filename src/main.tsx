@@ -13,7 +13,6 @@ import { CardProvider } from "./GameScreens/CardSelect/CardSelect.context.tsx";
 import { GrabProvider } from "./Player/player.context.tsx";
 import { CurrentPlayerProvider } from "./GameScreens/Room/player.context.tsx";
 import { AnimationProvider } from "./GameAnimations/animation.context.tsx";
-import { GameEndProvider } from "./GameScreens/GameEnd/GameEnd.context.tsx";
 import { SuggestionProvider } from "./GameScreens/Suggestion/Suggestion.context.tsx";
 import { TurnProvider } from "./Deck/deck.context.tsx";
 import { WebSocketProvider } from "./Services/websocket.services.tsx";
@@ -25,7 +24,6 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
     <WebSocketProvider>
     <TurnProvider>
     <SuggestionProvider>
-    <GameEndProvider>
     <AnimationProvider>
     <GrabProvider>
       <CardProvider>
@@ -43,7 +41,6 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
       </CardProvider>
     </GrabProvider>
     </AnimationProvider>
-    </GameEndProvider>
     </SuggestionProvider>
     </TurnProvider>
     </WebSocketProvider>

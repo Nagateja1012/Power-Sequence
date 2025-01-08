@@ -22,7 +22,7 @@ useEffect(() => {
     }
 }, [ suggestion, setSuggestion]);
   return (
-    <SuggestionContainer display={suggestion !== ''} suggestiontype={suggestionType}>
+    <SuggestionContainer displayProp={suggestion !== ''} suggestiontype={suggestionType}>
         
       <SuggestionTexth>{suggestion !== ''?suggestion:''}</SuggestionTexth>
     </SuggestionContainer>

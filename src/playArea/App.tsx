@@ -20,7 +20,7 @@ import { GameFormData } from "../models/model";
 import { RoomScreenReadService } from "../Services/Service.Read";
 
 import { usePlayerHand } from "../playerHand/playerHand.context";
-import { useCards } from "../GameScreens/CardSelect/CardSelect.context";
+
 import { useCurrentPlayer } from "../GameScreens/Room/player.context";
 import GameForm from "../GameScreens/lobby/lobby.component";
 import RoomScreen from "../GameScreens/Room/Room.component";
@@ -30,26 +30,43 @@ import { useSuggestion } from "../GameScreens/Suggestion/Suggestion.context";
 import { useTurn } from "../Deck/deck.context";
 import { useWebSocket } from "../Services/websocket.services";
 
+import { usePlayedCard } from "../PlayedCard/PlayedCard.context";
+
 function App() {
 
  
 
   const { setIsSelectionActive } = useSelection();
   const { setCurrentPlayer, RoomId, currentPlayer } = useCurrentPlayer();
-  const [currentScreen, setCurrentScreen] = useState("game");
-  const { images, setImages } = usePlayerHand();
-  const { setdropCard, setDropCardNum } = useCards();
+  const [currentScreen, setCurrentScreen] = useState("gameForm");
+  const { images, setImages  } = usePlayerHand();
+  // const { setdropCard, setDropCardNum } = useCards();
   const { setSuggestion, setSuggestionType } = useSuggestion();
-  const { isYourTurn, setIsTurnCompleted } = useTurn();
-  const { sendMessage, messages } = useWebSocket();
+  const { isYourTurn, setIsTurnCompleted, setIsYourTurn , isTurnCompleted} = useTurn();
+  const { sendMessage, messages , sendDraft, draft} = useWebSocket();
+   const {PlayedCard} = usePlayedCard();
+ 
+  
 
   useEffect(() => {
+
     if (messages[0]?.content?.currentScreen) {
       setCurrentScreen(messages[0].content.currentScreen);
+    }
+    if ( messages[0]?.content?.currentPlayer) {
+      setIsYourTurn(messages[0]?.content?.currentPlayer === currentPlayer)
     }
     if(messages[0]?.type === 'error'){
       setSuggestionType('error')
         setSuggestion(messages[0]?.content?.error)
+    }
+    if(messages[0]?.type === 'sequence'){
+      setSuggestionType('sequence')
+        setSuggestion(messages[0]?.content?.info)
+    }
+    if(messages[0]?.type === 'info'){
+      setSuggestionType('info')
+        setSuggestion(messages[0]?.content?.info)
     }
       
   }, [messages]);
@@ -97,32 +114,42 @@ function App() {
             />
           </Deck>
           <CardPlayed />
-          <ClaimButton
+          <ClaimButton disabled={!isTurnCompleted}
             onClick={() => {
-              sendMessage({ action: "sendMove", Message: { hello: "hi" } });
-              if (isYourTurn) {
                 setIsSelectionActive("Claim");
                 setSuggestion("Select the Sequence to claim");
-              }
             }}
           >
             Claim
           </ClaimButton>
           {}{" "}
-          <Score>
-            <button
-              // disabled={!isTurnCompleted}
+          <Score
+           
+              disabled={!isTurnCompleted}
               onClick={() => {
-                setdropCard(true);
-                setDropCardNum(2);
-                // setIsSelectionActive("Erase");
+                if(draft){
+                sendDraft();
+                }
+                else{
+                  console.log(PlayedCard)
+                  sendMessage({
+                    action: "sendMove",
+                    Message: {
+                      command: "Dead",
+                      roomId: RoomId,
+                      currentPlayer: currentPlayer,
+                      lastPlayedCard: PlayedCard
+                    }
+                  })
+                }
+                setIsTurnCompleted(false);
+                setIsSelectionActive('')
               }}
             >
-              testing
-            </button>
+              Next
+
           </Score>
           <ImageGallery
-            images={["R1", "ALTER", "R2", "DROP", "B1", "GRAB", "G1", "DROP"]}
           />
           <CardSelect />
         </div>

@@ -24,9 +24,15 @@ const GameForm: React.FC<GameFormProps> = ({ onSubmit }) => {
     isCreate: true
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     onSubmit(formData);
+    setIsLoading(true);
+    await new Promise(resolve => setTimeout(resolve, 5000));
+    setIsLoading(false);
+    
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -150,8 +156,8 @@ const GameForm: React.FC<GameFormProps> = ({ onSubmit }) => {
           />
         </FormGroup>
 
-        <SubmitButton type="submit" >
-          {formData.isCreate ? 'Create Game' : 'Join Game'}
+        <SubmitButton type="submit" disabled={isLoading}>
+          {isLoading ? 'Loading...' : formData.isCreate ? 'Create Game' : 'Join Game'}
         </SubmitButton>
       </GameFormStyled>
     </GameFormContainer>

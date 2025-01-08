@@ -24,11 +24,12 @@ const RoomScreen: React.FC<RoomScreenProps> = ({ onClick }) => {
   const { messages, sendMessage } = useWebSocket();
   const [players, setPlayers] = useState<Player[]>([]);
   const [remainingPlayers, setRemainingPlayers] = useState<string>('');
+  const [isWaiting, setIsWaiting] = useState(false);
 
   const [waitingPlayers, setWaitingPlayers] = useState<Player[]>([]);
   const [teams, setTeams] = useState<Team[]>([]);
   const [isNextEnabled, setIsNextEnabled] = useState(false);
-  const { currentPlayer, RoomId, setRoomId } = useCurrentPlayer();
+  const { currentPlayer, RoomId, setRoomId, setcurTeam } = useCurrentPlayer();
 
   useEffect(() => {
     if (messages?.[0]?.type === 'PlayerData') {
@@ -70,6 +71,10 @@ const RoomScreen: React.FC<RoomScreenProps> = ({ onClick }) => {
       prevWaiting.filter(player => player.playerId !== playerId)
     );
 
+    if (playerId === currentPlayer) {
+      setcurTeam(teamId);
+    }
+
     sendMessage({
       action: "createGame",
       Message: {
@@ -93,6 +98,10 @@ const RoomScreen: React.FC<RoomScreenProps> = ({ onClick }) => {
       setWaitingPlayers(prev => [...prev, playerToMove]);
     }
 
+    if (playerId === currentPlayer) {
+      setcurTeam(null);
+    }
+
     sendMessage({
       action: "createGame",
       Message: {
@@ -102,6 +111,11 @@ const RoomScreen: React.FC<RoomScreenProps> = ({ onClick }) => {
         roomId: messages[0]?.content?.roomId
       }
     });
+  };
+
+  const handleNext = () => {
+    setIsWaiting(true);
+    onClick();
   };
 
   return (
@@ -153,8 +167,8 @@ const RoomScreen: React.FC<RoomScreenProps> = ({ onClick }) => {
         ))}
       </TeamBlocks>
 
-      <NextButton disabled={!isNextEnabled} onClick={onClick}>
-        Next
+      <NextButton disabled={!isNextEnabled} onClick={handleNext}>
+        {isWaiting ? 'Waiting for players...' : 'Next'}
       </NextButton>
     </RoomContainer>
   );

@@ -1,4 +1,4 @@
-import { UpdatePlayingState } from "../Player/player.component";
+
 import { useCards } from "../GameScreens/CardSelect/CardSelect.context";
 
 
@@ -10,7 +10,7 @@ export const RoomScreenReadService = ()=>{
 }    
 
 export const currentplayerturn = () =>{
-    UpdatePlayingState("Mike Williams");
+
 }
 
 export const readboard = () => {

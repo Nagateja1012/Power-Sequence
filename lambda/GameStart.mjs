@@ -64,9 +64,9 @@ export const handler = async (event) => {
     })
   );
 
-  const { teamId, playerName } = connectionResponse.Items[0];
+  const { teamId, playerName, clientId } = connectionResponse.Items[0];
   const newPlayer = { playerId, teamId, name: playerName };
-  console.log(newPlayer);
+
   try {
     await updateOrCreateGame(roomId, newPlayer);
     
@@ -77,12 +77,9 @@ export const handler = async (event) => {
 
     const numPlayers = roomResponse.Item.numPlayers;
     const currentPlayers = gameResponse.Item.orderedPlayers.length;
-    console.log(currentPlayers);
-    console.log(numPlayers);
-    console.log(currentPlayers == numPlayers);
+
 
     if (currentPlayers == numPlayers) {
-        console.log('last player')
       await gameGenerate(roomId);
     }
 
@@ -92,14 +89,12 @@ export const handler = async (event) => {
     };
 
   } catch (error) {
-    console.error('Error in handler:', error);
     throw error;
   }
 };
 
 const updateOrCreateGame = async (roomId, newPlayer) => {
   try {
-    // First check if player already exists
     const existingGame = await dynamoDB.send(
       new GetCommand({
         TableName: TABLES.GAME,
@@ -108,7 +103,6 @@ const updateOrCreateGame = async (roomId, newPlayer) => {
     );
 
     if (existingGame.Item && existingGame.Item.orderedPlayers.some(p => p.playerId === newPlayer.playerId)) {
-      console.log("Player already exists in game");
       return;
     }
 
@@ -124,7 +118,6 @@ const updateOrCreateGame = async (roomId, newPlayer) => {
         ConditionExpression: "attribute_exists(roomId)"
       })
     );
-    console.log("Game updated successfully");
   } catch (error) {
     if (error.name === 'ConditionalCheckFailedException') {
       await dynamoDB.send(
@@ -138,7 +131,6 @@ const updateOrCreateGame = async (roomId, newPlayer) => {
           ConditionExpression: "attribute_not_exists(roomId)"
         })
       );
-      console.log("New game created");
     } else {
       throw error;
     }
@@ -154,14 +146,12 @@ const gameGenerate = async (roomId) => {
   );
 
   const sortedPlayers = sortPlayersByTeam(gameResponse.Item.orderedPlayers);
-  console.log(sortedPlayers);
   const initialGrid = generateGameBoard();
-  console.log(initialGrid);
   const shuffledDeck = [...DECK].sort(() => Math.random() - 0.5);
-  console.log(shuffledDeck);
-  await notifyPlayers(roomId, sortedPlayers, initialGrid, shuffledDeck);
-  await updateGameState(roomId, sortedPlayers, initialGrid, shuffledDeck);
-  
+  await Promise.all([
+    notifyPlayers(roomId, sortedPlayers, initialGrid, shuffledDeck),
+    updateGameState(roomId, sortedPlayers, initialGrid, shuffledDeck)
+  ]);
 };
 
 const sortPlayersByTeam = (players) => {
@@ -218,48 +208,49 @@ const generateGameBoard = () => {
 };
 
 const updateGameState = async (roomId, players, board, deck) => {
-    console.log(deck)
+  const uniqueTeams = [...new Set(players.map(player => player.teamId))];
   await dynamoDB.send(
     new UpdateCommand({
       TableName: TABLES.GAME,
       Key: { roomId },
-      UpdateExpression: "SET orderedPlayers = :players, Deck = :deck, board = :board",
+      UpdateExpression: "SET orderedPlayers = :players, Deck = :deck, isreverse = :isreverse, currentPlayer = :currentPlayer, numsequence = :sequence, teamsequence =:teamsequence",  
       ExpressionAttributeValues: {
         ":players": players,
         ":deck": deck,
-        ":board": board
-      }
+        ":isreverse": false,
+        ":currentPlayer": 0,
+        ":sequence": Array(uniqueTeams.length).fill(0) ,
+        ":teamsequence":Array(uniqueTeams.length).fill([]) ,       
+        }
     })
   );
 };
 
 const notifyPlayers = async (roomId, players, board, deck) => {
   const playersInRoom = await getPlayersInRoom(roomId);
-  console.log(playersInRoom);
 
-  
-  await Promise.all(playersInRoom.map(async player => {
-    try {
-      await Promise.all([
-        webClient.send(new PostToConnectionCommand({
-          ConnectionId: player.clientId,
-          Data: JSON.stringify({
-            type: "GAME_START",
-            data: { board, players,currentScreen: "game" }
-          })
-        })),
-        webClient.send(new PostToConnectionCommand({
-          ConnectionId: player.clientId,
-          Data: JSON.stringify({
-            type: "PLAYER_HAND",
-            data: { cards: deck.splice(0, 4) }
-          })
-        }))
-      ]);
-    } catch (err) {
-      console.error(`Failed to send message to player ${player.playerId}`, err);
-    }
-  }));
+  const notifications = playersInRoom.flatMap(player => {
+    const messages = [{
+      ConnectionId: player.clientId,
+      Data: JSON.stringify({
+        type: "GAME_START", 
+        content: { 
+          board, 
+          players, 
+          currentScreen: "game",
+          cards: deck.splice(0, 4),
+          currentPlayer: players[0].playerId
+        }
+      })
+    }];
+
+    return messages.map(msg => 
+      webClient.send(new PostToConnectionCommand(msg))
+        .catch(err => {})
+    );
+  });
+
+  await Promise.all(notifications);
 };
 
 const getPlayersInRoom = async (roomId) => {

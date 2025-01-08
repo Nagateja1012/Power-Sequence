@@ -1,23 +1,32 @@
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
-import { useGameEnd } from './GameEnd.context';
+
 import { GameEndButton, ResultContainer, ResultText } from './GameEnd.styles';
+import { useWebSocket } from '../../Services/websocket.services';
+import { useCurrentPlayer } from '../Room/player.context';
 
 
 
 
 
 const GameResult: React.FC = () => {
-    const {isGameOver,
-        teamWon,
-        } = useGameEnd()
+  const [gameOver, setGameOver] =useState(false);
+  const [team, setTeam] =useState(null);
+  const {  curTeam } = useCurrentPlayer();
+        const {  messages  } = useWebSocket();
+  useEffect(() => {
+    if (messages[0]?.type === "Winner") {
+      setGameOver(true)
+      setTeam(messages[0]?.content?.Team)
+    }
+  }, [messages]);
   return (
-    <ResultContainer display={isGameOver}>
+    <ResultContainer display={gameOver ?  'block' : 'none'}>
       <ResultText>
-        {teamWon === 'blue' 
+        { team === curTeam 
           ? "Your team won the game!" 
-          : `Your team lost and team ${teamWon} are winners.`}
+          : `Your team lost and team ${team === '1' ? 'Gold' : team === '2' ? 'Silver' : 'Uranium'} are winners.`}
           <GameEndButton 
   onClick={()=> window.location.reload()}>
   Close Game

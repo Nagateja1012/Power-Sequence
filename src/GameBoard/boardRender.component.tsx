@@ -41,7 +41,7 @@ return (
             )}
             {cell.hasIcon && !corners.some(([r, c]) => r === rowIndex && c === colIndex) && (
               <ImageLoader StyledImg={IconImage}
-              src={cell.player === 'blue' ?  import.meta.env.VITE_COINS_URL+'blue.png' : cell.player === 'gold' ? import.meta.env.VITE_COINS_URL+'gold.png' : import.meta.env.VITE_COINS_URL+'silver.png'}  />
+              src={cell.player === '3' ?  import.meta.env.VITE_COINS_URL+'blue.png' : cell.player === '1' ? import.meta.env.VITE_COINS_URL+'gold.png' : import.meta.env.VITE_COINS_URL+'silver.png'}  />
 
               
             )}

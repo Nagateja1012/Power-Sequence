@@ -7,5 +7,5 @@ export type CellData = {
   value: number;
   color: string;
   hasIcon: boolean;
-  player?: 'gold' | 'silver' | 'blue' | undefined
+  player?: '1' | '2' | '3' | null
 };
