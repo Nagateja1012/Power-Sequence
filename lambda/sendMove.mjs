@@ -80,11 +80,14 @@ export const handler = async (event) => {
     ? (currentPlayer - 1 + orderedPlayers.length) % orderedPlayers.length
     : (currentPlayer + 1) % orderedPlayers.length;
 
-  await updateGameState(roomId, "SET currentPlayer = :nextPlayer", {
-    ":nextPlayer": nextPlayer
-  });
-
+  
+  if(command === 'placeCoin'||command === 'Dead'){
+    await updateGameState(roomId, "SET currentPlayer = :nextPlayer", {
+      ":nextPlayer": nextPlayer
+    });
+  }
   if (command === 'placeCoin') {
+    
     await broadcastToPlayers(playersInRoom, {
       type: "playerMove",
       content: {

@@ -21,6 +21,7 @@ const GameBoard: React.FC = () => {
     [7, 7],
   ];
 
+  const tempgrid =[[{"value":-1,"color":"#ffffff","hasIcon":true},{"value":6,"color":"#accaff","hasIcon":false},{"value":4,"color":"#a9e77f","hasIcon":false},{"value":9,"color":"#accaff","hasIcon":false},{"value":0,"color":"#fa6666","hasIcon":false},{"value":8,"color":"#fa6666","hasIcon":false},{"value":8,"color":"#accaff","hasIcon":false},{"value":-1,"color":"#ffffff","hasIcon":true}],[{"value":4,"color":"#a9e77f","hasIcon":false},{"value":2,"color":"#a9e77f","hasIcon":false},{"value":5,"color":"#accaff","hasIcon":false},{"value":9,"color":"#fa6666","hasIcon":false},{"value":5,"color":"#a9e77f","hasIcon":false},{"value":9,"color":"#a9e77f","hasIcon":false},{"value":7,"color":"#accaff","hasIcon":false},{"value":8,"color":"#accaff","hasIcon":false}],[{"value":3,"color":"#a9e77f","hasIcon":false},{"value":1,"color":"#a9e77f","hasIcon":false},{"value":5,"color":"#accaff","hasIcon":false},{"value":1,"color":"#accaff","hasIcon":false},{"value":8,"color":"#a9e77f","hasIcon":false},{"value":7,"color":"#a9e77f","hasIcon":false},{"value":3,"color":"#accaff","hasIcon":false},{"value":9,"color":"#a9e77f","hasIcon":false}],[{"value":1,"color":"#fa6666","hasIcon":false},{"value":7,"color":"#accaff","hasIcon":false},{"value":9,"color":"#fa6666","hasIcon":false},{"value":0,"color":"#accaff","hasIcon":false},{"value":2,"color":"#fa6666","hasIcon":false},{"value":2,"color":"#fa6666","hasIcon":false},{"value":4,"color":"#accaff","hasIcon":false},{"value":2,"color":"#accaff","hasIcon":false}],[{"value":1,"color":"#a9e77f","hasIcon":false},{"value":2,"color":"#a9e77f","hasIcon":false},{"value":5,"color":"#a9e77f","hasIcon":false},{"value":3,"color":"#fa6666","hasIcon":false},{"value":7,"color":"#a9e77f","hasIcon":false},{"value":3,"color":"#accaff","hasIcon":false},{"value":0,"color":"#fa6666","hasIcon":false},{"value":4,"color":"#accaff","hasIcon":false}],[{"value":7,"color":"#fa6666","hasIcon":false},{"value":8,"color":"#a9e77f","hasIcon":false},{"value":3,"color":"#fa6666","hasIcon":false},{"value":6,"color":"#a9e77f","hasIcon":false},{"value":7,"color":"#fa6666","hasIcon":false},{"value":0,"color":"#accaff","hasIcon":false},{"value":0,"color":"#a9e77f","hasIcon":false},{"value":5,"color":"#fa6666","hasIcon":false}],[{"value":4,"color":"#fa6666","hasIcon":false},{"value":3,"color":"#a9e77f","hasIcon":false},{"value":2,"color":"#accaff","hasIcon":false},{"value":5,"color":"#fa6666","hasIcon":false},{"value":1,"color":"#accaff","hasIcon":false},{"value":4,"color":"#fa6666","hasIcon":false},{"value":0,"color":"#a9e77f","hasIcon":false},{"value":1,"color":"#fa6666","hasIcon":false}],[{"value":-1,"color":"#ffffff","hasIcon":true},{"value":6,"color":"#accaff","hasIcon":false},{"value":8,"color":"#fa6666","hasIcon":false},{"value":6,"color":"#a9e77f","hasIcon":false},{"value":6,"color":"#fa6666","hasIcon":false},{"value":6,"color":"#fa6666","hasIcon":false},{"value":9,"color":"#accaff","hasIcon":false},{"value":-1,"color":"#ffffff","hasIcon":true}]]
    const { messages,sendMessage,draftMessage } = useWebSocket();
    
    useEffect(() => {
@@ -42,16 +43,14 @@ const GameBoard: React.FC = () => {
     }
    }, [messages]);
 
-  const [grid, setGrid] = useState<CellData[][]>([]);
+  const [grid, setGrid] = useState<CellData[][]>(tempgrid);
   const {isSelectionActive, setIsSelectionActive, CardValue, setCardValue} = useSelection();
   const [maxSelectionLimit, setMaxSelectionLimit] = useState(5);
   const [selectedCellIndex, setSelectedCellIndex] = useState<number[][]>([]);
   const {RoomId, curTeam, currentPlayer} =useCurrentPlayer()
   const {PlayedCard,setPlayedCard} = usePlayedCard();
 
- const activateSelection = () => {
-  console.log(isSelectionActive)
-};
+
 
 
   const handleCellClick = (row: number, col: number) => {
@@ -162,7 +161,7 @@ const GameBoard: React.FC = () => {
         selectedCellIndex={selectedCellIndex}
         onCellClick={handleCellClick}
       />
-      <button onClick={activateSelection}> testubg</button>
+
      <Animation animationName="grab" />
     </div>
   );

@@ -4,7 +4,7 @@ import styled from '@emotion/styled';
 export const SuggestionContainer = styled.div<{displayProp:boolean, suggestiontype?: string}>`
   background-color: ${props => 
     props.suggestiontype === 'error' ? 'rgba(255, 0, 0, 0.85)' : 
-    props.suggestiontype === 'sequence' ? 'rgba(0, 255, 0, 0.85)' :
+    props.suggestiontype === 'sequence' ? 'rgb(0, 79, 0)' :
     'rgba(23, 23, 23, 0.85)'
   }; 
   text-align: center;

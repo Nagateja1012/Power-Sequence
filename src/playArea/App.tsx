@@ -38,7 +38,7 @@ function App() {
 
   const { setIsSelectionActive } = useSelection();
   const { setCurrentPlayer, RoomId, currentPlayer } = useCurrentPlayer();
-  const [currentScreen, setCurrentScreen] = useState("gameForm");
+  const [currentScreen, setCurrentScreen] = useState("game");
   const { images, setImages  } = usePlayerHand();
   // const { setdropCard, setDropCardNum } = useCards();
   const { setSuggestion, setSuggestionType } = useSuggestion();
@@ -105,8 +105,8 @@ function App() {
           <GameBoardStyle>
             <GameBoard  />
           </GameBoardStyle>
-          <CreatePlayerElements
-          />
+          {/* <CreatePlayerElements
+          /> */}
           <Deck onClick={handleDeck}>
             <ImageLoader
               src={import.meta.env.VITE_ASSETS_URL + "deck.png"}
