@@ -12,7 +12,7 @@ export const ResultContainer = styled.div<{display:string}>`
   min-height: 30%;
     width: 70%;
 top:10%;
-left:10%;
+left:15%;
 zIndex: 1;
 display: ${(props) => props.display };
 `;

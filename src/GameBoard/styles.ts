@@ -3,16 +3,19 @@ import styled from '@emotion/styled';
 export const GridContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(8, 1fr);
-  gap: 4px;
+  gap: 1%;
   width: fit-content;
   background-color: #e0e0e0;
-  padding: 4px;
+  padding: 2px;
   border-radius: 4px;
+
 `;
 
 export const Cell = styled.div<{ backgroundColor: string; isClicked?: boolean }>`
-  width: 45px;
-  height: 45px;
+  width: 3vw;
+  max-width:40px;
+  height: 5vh;
+   max-height:40px;
   background-color: ${props => props.backgroundColor};
   display: flex;
   position: relative;
@@ -32,16 +35,18 @@ export const Cell = styled.div<{ backgroundColor: string; isClicked?: boolean }>
 
 export const CellNumber = styled.span`
   position: absolute;
-  top: 4px;
-  left: 4px;
-  font-size: 18px;
+  top: 2px;
+  left: 2px;
+  font-size: 1.1em;
   font-weight: bold;
   color: #333;
 `;
 
 export const IconImage = styled.img`
-  width: 40px;
-  height: 40px;
+  width: 2.5vw;
+  height: 4vh;
+  max-width: 30px;
+  max-height: 30px;
   object-fit: contain;
 `;
 

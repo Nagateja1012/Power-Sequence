@@ -10,15 +10,18 @@ export const PlayerContainer = styled.div`
 `
 
 export const PlayerImage = styled.img`
-  width: 70px;
-  height: 70px;
+width: 5vw;
+height: 18vh;  
+max-width: 70px;
+  max-height: 70px;
   border-radius: 50%;
 `
 
 export const PlayerName = styled.div<{isPlaying: boolean, group: string}>`
   margin-top: 5px;
-  font-size: 12px;
+  font-size: 0.9em;
   font-weight: bold;
+  font-family:  sans-serif;
   color: ${props => props.group === '1' ? '#ff0000' : props.group === '2' ? '#0000ff' : '#05851a'}; 
    animation: ${props => props.isPlaying ? 'pulse 1s infinite' : 'none'};
 

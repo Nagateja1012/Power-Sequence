@@ -14,7 +14,7 @@ export const SuggestionContainer = styled.div<{displayProp:boolean, suggestionty
   min-width: 5%;
   width: 70%;
   top:10%;
-  left:20%;
+  left:15%;
   zIndex: 1;
   opacity: ${(props) => props.displayProp ? 1 : 0};
   visibility: ${(props) => props.displayProp ? 'visible' : 'hidden'};

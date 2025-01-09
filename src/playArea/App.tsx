@@ -37,7 +37,7 @@ function App() {
 
   const { setIsSelectionActive } = useSelection();
   const { setCurrentPlayer, RoomId, currentPlayer } = useCurrentPlayer();
-  const [currentScreen, setCurrentScreen] = useState("gameForm");
+  const [currentScreen, setCurrentScreen] = useState("game");
   // const { images, setImages  } = usePlayerHand();
   // const { setdropCard, setDropCardNum } = useCards();
   const { setSuggestion, setSuggestionType } = useSuggestion();

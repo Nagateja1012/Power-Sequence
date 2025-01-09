@@ -32,8 +32,10 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
 
               <SelectionProvider>
                 <CurrentPlayerProvider>
-                  <App />
-                  <h3 style={{ textAlign: 'center', fontSize: '0.8rem', color: 'black' , marginTop:'2%', letterSpacing: '2px'}}>Designed and devloped by Naga Teja for AWS Hackathon</h3>                </CurrentPlayerProvider>
+                <App />
+              <h3 style={{ textAlign: 'center', fontWeight:"bolder", fontFamily:"sans-serif", fontSize: '0.8rem',color: 'rgb(0, 0, 0)', top:'98%', left:'50%', transform: 'translate(-50%, -50%)', position:"absolute", letterSpacing: '2px', zIndex:'1'}}>Designed and devloped by Naga Teja for AWS Hackathon</h3>     
+                  
+                             </CurrentPlayerProvider>
               </SelectionProvider>
 
           </PlayedCardProvider>

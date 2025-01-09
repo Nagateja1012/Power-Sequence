@@ -251,7 +251,7 @@ const HandleCard = (image: string, index:number) =>{
   }
 }
   return (
-    <div style={{ position: 'relative', marginTop: '55%' }}>
+    <div style={{ position: 'relative', marginTop:'65vh' }}>
       <div
         ref={containerRef}
         style={{
