@@ -12,9 +12,11 @@ import { useAnimation } from '../GameAnimations/animation.context';
 const CardPlayed: React.FC = () => {
   const { messages } = useWebSocket();
   useEffect(() => {
-  if (messages[0]?.type === 'playerMove') {
+  if (messages[0]?.type === 'playerMove' || messages[0]?.type === 'PowerUpdate') {
+    if(messages[0]?.content?.lastPlayedCard){
     setPlayedCard(messages[0]?.content?.lastPlayedCard)
   }
+}
   }, [messages]);
 
   const {PlayedCard, setPlayedCard} = usePlayedCard();

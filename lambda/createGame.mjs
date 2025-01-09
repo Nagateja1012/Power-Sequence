@@ -168,7 +168,7 @@ export const handler = async (event) => {
         playerName: message.Message.playerName,
         clientId,
         teamId: null,
-        ttl: TTL,
+        ttl: Math.floor(Date.now() / 1000) + TTL,
         timestamp: new Date().toISOString(),
       },
     };

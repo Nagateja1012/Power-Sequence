@@ -67,6 +67,7 @@ export const WebSocketProvider: React.FC<{children: React.ReactNode}> = ({ child
 
   const sendMessage = (message: MoveMessage): void => {
     if (socket && socket.readyState === WebSocket.OPEN) {
+      console.log('Sending message:', message);
       socket.send(JSON.stringify(message));
     } else {
       console.error('WebSocket is not open');

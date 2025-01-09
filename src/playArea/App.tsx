@@ -19,7 +19,6 @@ import { GameLobbyDataService } from "../Services/Service.Send";
 import { GameFormData } from "../models/model";
 import { RoomScreenReadService } from "../Services/Service.Read";
 
-import { usePlayerHand } from "../playerHand/playerHand.context";
 
 import { useCurrentPlayer } from "../GameScreens/Room/player.context";
 import GameForm from "../GameScreens/lobby/lobby.component";
@@ -38,8 +37,8 @@ function App() {
 
   const { setIsSelectionActive } = useSelection();
   const { setCurrentPlayer, RoomId, currentPlayer } = useCurrentPlayer();
-  const [currentScreen, setCurrentScreen] = useState("game");
-  const { images, setImages  } = usePlayerHand();
+  const [currentScreen, setCurrentScreen] = useState("gameForm");
+  // const { images, setImages  } = usePlayerHand();
   // const { setdropCard, setDropCardNum } = useCards();
   const { setSuggestion, setSuggestionType } = useSuggestion();
   const { isYourTurn, setIsTurnCompleted, setIsYourTurn , isTurnCompleted} = useTurn();
@@ -85,9 +84,15 @@ function App() {
   RoomScreenReadService();
   const handleDeck = () => {
     if (isYourTurn) {
-      console.log("deck clicked");
-      setImages([...images, "ERASE"]);
-      setIsTurnCompleted(true);
+      sendMessage({
+        action: "PowerCardAction",
+        Message: {
+          command: "Deck",
+          roomId: RoomId,
+          currentPlayer: currentPlayer,
+        },
+      })
+      setIsTurnCompleted(false);
     }
   };
 
@@ -105,8 +110,8 @@ function App() {
           <GameBoardStyle>
             <GameBoard  />
           </GameBoardStyle>
-          {/* <CreatePlayerElements
-          /> */}
+          <CreatePlayerElements
+          />
           <Deck onClick={handleDeck}>
             <ImageLoader
               src={import.meta.env.VITE_ASSETS_URL + "deck.png"}

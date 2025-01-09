@@ -4,14 +4,23 @@ import { CardSelectContainer, CardSelectGrid, CardSelectHeader, CardSelectImg } 
 import ImageLoader from '../../AssetsLoader/imageLoader.component';
 import { useCards } from './CardSelect.context';
 import { usePlayerHand } from '../../playerHand/playerHand.context';
-import { alterCardsUpdate } from '../../Services/Service.Send';
+
 import { useGrab } from '../../Player/player.context';
+import { useWebSocket } from '../../Services/websocket.services';
+import { useCurrentPlayer } from '../Room/player.context';
 
 
 const CardSelect: React.FC = () => {
   const {cards, setCards,display, setDisplay} = useCards()
   const {images, setImages} = usePlayerHand();
      const { grabbedCard, setgrabbedCard} = useGrab()
+     const {   sendMessage } = useWebSocket();
+       const {  RoomId, currentPlayer } = useCurrentPlayer();
+
+const removeCardFromDeck = (imageName: string, cards: string[]): string[] => {
+  return cards.filter(card => card !== imageName);
+};
+
   return (
     <CardSelectContainer displayProp={display}>
         <CardSelectHeader >Arrange and pick a card</CardSelectHeader>                
@@ -23,9 +32,19 @@ const CardSelect: React.FC = () => {
           onClick={() => {
             if(imageName !== 'back'){
             setImages( [...images, imageName])
-            alterCardsUpdate(imageName, cards)
+            sendMessage({
+              action: "PowerCardAction",
+              Message: {
+                command: "Alter2",
+                roomId: RoomId,
+                currentPlayer: currentPlayer,
+                playerMove: removeCardFromDeck(imageName, cards)
+              },
+            })
+            
             
             }else{
+              console.log(grabbedCard)
               setImages( [...images, grabbedCard])
               setgrabbedCard('')
             }

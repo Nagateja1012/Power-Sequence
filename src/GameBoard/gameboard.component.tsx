@@ -39,11 +39,43 @@ const GameBoard: React.FC = () => {
         player: coin[2].toString(),
       };
       setGrid(newGrid);
-     }
     }
+  }
+      
+      if (messages[0]?.type === 'PowerUpdate' && messages[0]?.content?.command === 'Erase' ) {
+        setPlayedCard(messages[0]?.content?.lastPlayedCard)
+        const coin = messages[0]?.content?.playerMove;
+        if(coin){
+          const newGrid = grid.map((row) => [...row]);
+      newGrid[coin[0]][coin[1]] = {
+        ...newGrid[coin[0]][coin[1]],
+        hasIcon: false,
+      }
+      setGrid(newGrid);
+    }
+  }
+
+  if (messages[0]?.type === 'PowerUpdate' && messages[0]?.content?.command === 'Destroy' ) {
+    setPlayedCard(messages[0]?.content?.lastPlayedCard)
+    const coins = messages[0]?.content?.playerMove;
+    if(coins){
+      coins.forEach((coin: number[]) => {
+        const newGrid = grid.map((row) => [...row]);
+        newGrid[coin[0]][coin[1]] = {
+          ...newGrid[coin[0]][coin[1]],
+          hasIcon: false,
+        }
+        setGrid(newGrid);
+      });
+    }
+      
+}
+
+     
+    
    }, [messages]);
 
-  const [grid, setGrid] = useState<CellData[][]>(tempgrid);
+  const [grid, setGrid] = useState<CellData[][]>([]);
   const {isSelectionActive, setIsSelectionActive, CardValue, setCardValue} = useSelection();
   const [maxSelectionLimit, setMaxSelectionLimit] = useState(5);
   const [selectedCellIndex, setSelectedCellIndex] = useState<number[][]>([]);
@@ -69,10 +101,10 @@ const GameBoard: React.FC = () => {
         if (selectedcells.length === maxSelectionLimit) {
           if (maxSelectionLimit === 4) setMaxSelectionLimit(5);
           if(arePointsInLine(selectedcells)){
-
+              console.log(selectedcells)
               DestoryCoins();
               // send message to the server about the remove of the coins
-
+              sendMessage({ action: "PowerCardAction", Message: { roomId:RoomId, command : "Destroy", playerMove: [selectedcells], currentPlayer } })
           }
           
           setIsSelectionActive('');        
@@ -112,6 +144,7 @@ const GameBoard: React.FC = () => {
             ...newGrid[row][col],
             hasIcon: false,
           };
+          sendMessage({ action: "PowerCardAction", Message: { roomId:RoomId, command : "Erase", playerMove: [row,col]} })
           setIsSelectionActive('');  
           setGrid(newGrid);
         } else if ((isSelectionActive === 'Place' && 
@@ -162,7 +195,7 @@ const GameBoard: React.FC = () => {
         onCellClick={handleCellClick}
       />
 
-     <Animation animationName="grab" />
+     <Animation  />
     </div>
   );
 };

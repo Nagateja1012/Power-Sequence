@@ -24,7 +24,7 @@ export const PlayerName = styled.div<{isPlaying: boolean, group: string}>`
 
   @keyframes pulse {
     0% { transform: scale(1); }
-    50% { transform: scale(1.1); }
+    50% { transform: scale(1.5); }
     100% { transform: scale(1); }
   }
 `
