@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 
 
-export const ResultContainer = styled.div<{display:boolean}>`
+export const ResultContainer = styled.div<{display:string}>`
   background-color: white;
   padding: 20px;
   text-align: center;
@@ -12,9 +12,9 @@ export const ResultContainer = styled.div<{display:boolean}>`
   min-height: 30%;
     width: 70%;
 top:10%;
-left:10%;
+left:15%;
 zIndex: 1;
-display: ${(props) => props.display ? 'block' : 'none'};
+display: ${(props) => props.display };
 `;
 
 export const ResultText = styled.h2`

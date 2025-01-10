@@ -5,23 +5,29 @@ import { createContext, useContext, useState } from "react";
 const SuggestionContext = createContext<{
 
   suggestion: string;
+  suggestionType: string;
   setSuggestion: (suggestion: string) => void;
+  setSuggestionType: (type: string) => void;
 }>({
- 
   suggestion: '',
-  setSuggestion: () => {}
+  suggestionType: '',
+  setSuggestion: () => {},
+  setSuggestionType: () => {}
 });
 
-// Provider component to wrap application and provide suggestion context
+// Provider component to wrap application and provide suggestion context 
 export const SuggestionProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
   const [suggestion, setSuggestion] = useState<string>('');
+  const [suggestionType, setSuggestionType] = useState<string>('');
 
   return (
     <SuggestionContext.Provider value={{
 
       suggestion,
-      setSuggestion
+      suggestionType,
+      setSuggestion,
+      setSuggestionType
     }}>
       {children}
     </SuggestionContext.Provider>

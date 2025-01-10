@@ -8,8 +8,10 @@ export const PlayedCards = styled.div`
 `;
 
 export const CardImage = styled.img`
-  width: 120px;
-  height: 180px;
+  width: 10vw;
+  height: 25vh;
+  max-width: 150px;
+  max-height: 220px;
   cursor: pointer;
 `;
 

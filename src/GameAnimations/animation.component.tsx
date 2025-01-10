@@ -8,13 +8,10 @@ import { alterSound, DropSound,  explosionSound, grabSound, jokerSound, reverseS
 import { useAnimation } from "./animation.context";
 
 
-interface AnimationProps {
-  animationName: string;
-}
 
 
 
-const Animation: React.FC<AnimationProps> =  () => {
+const Animation: React.FC =  () => {
   const {animationName ,aniamtionDisplay, setaniamtionDisplay, setAnimationName} = useAnimation()
 
   switch (animationName) {
@@ -47,7 +44,7 @@ const Animation: React.FC<AnimationProps> =  () => {
   
   
   return (
-    <AnimationDiv display={aniamtionDisplay}>
+    <AnimationDiv displayProp={aniamtionDisplay}>
       <Lottie 
         animationData={animationName !== '' ? AnimationLoader({src: import.meta.env.VITE_ANIMATION_URL+animationName+'.json'}) : ''}
         loop={false}

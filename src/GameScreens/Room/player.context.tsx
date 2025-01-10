@@ -1,29 +1,32 @@
 import { createContext, useContext, useState } from "react";
 
-// Create context to manage current player state
 const CurrentPlayerContext = createContext<{
     currentPlayer: string | null;
-    NumTeam: string | null;
+    RoomId: string| null;
+    curTeam: string | null;
     setCurrentPlayer: (player: string | null) => void;
-    setNumTeam: (player: string | null) => void;
+    setRoomId: (player: string | null) => void;
+    setcurTeam: (curTeam: string | null) => void;
   }>({
     currentPlayer: null,
-    NumTeam: null,
+    RoomId: null,
+    curTeam: null,
     setCurrentPlayer: () => {},
-    setNumTeam: () => {}
+    setRoomId: () => {},
+    setcurTeam: () => {}
   });
   
-  // Custom hook to access current player context
-  // Moved hook inside function component to comply with React Hooks rules
+ 
 
   
-  // Provider component to wrap application 
+
   export const CurrentPlayerProvider: React.FC<{children: React.ReactNode}> = ({children}) => {
     const [currentPlayer, setCurrentPlayer] = useState<string | null>(null);
-    const [NumTeam, setNumTeam] = useState<string | null>(null);
+    const [RoomId, setRoomId] = useState<string | null>(null);
+    const [curTeam, setcurTeam] = useState<string | null>(null);
   
     return (
-      <CurrentPlayerContext.Provider value={{currentPlayer, setCurrentPlayer,NumTeam, setNumTeam }}>
+      <CurrentPlayerContext.Provider value={{currentPlayer, setCurrentPlayer, RoomId, setRoomId, curTeam, setcurTeam }}>
         {children}
       </CurrentPlayerContext.Provider>
     );

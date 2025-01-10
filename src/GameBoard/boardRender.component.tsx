@@ -5,6 +5,7 @@ import ImageLoader from '../AssetsLoader/imageLoader.component';
 
 
 
+
 interface BoardRenderProps {
   grid: CellData[][];
   selectedCellIndex: number[][];
@@ -29,8 +30,9 @@ return (
           <Cell
             key={`${rowIndex}-${colIndex}`}
             backgroundColor={cell.color}
-            isClicked={selectedCellIndex.some(([r,c]) => r === rowIndex && c === colIndex)}
-            onClick={() => onCellClick(rowIndex, colIndex)}
+            isClicked={ selectedCellIndex.some(([r,c]) => r === rowIndex && c === colIndex)}
+            onClick={() => 
+               onCellClick(rowIndex, colIndex)}
           >
             {cell.value !== -1 && (
               <CellNumber>{cell.value}</CellNumber>
@@ -40,7 +42,7 @@ return (
             )}
             {cell.hasIcon && !corners.some(([r, c]) => r === rowIndex && c === colIndex) && (
               <ImageLoader StyledImg={IconImage}
-              src={cell.player === 'blue' ?  import.meta.env.VITE_COINS_URL+'blue.png' : cell.player === 'gold' ? import.meta.env.VITE_COINS_URL+'gold.png' : import.meta.env.VITE_COINS_URL+'silver.png'}  />
+              src={cell.player === '3' ?  import.meta.env.VITE_COINS_URL+'blue.png' : cell.player === '1' ? import.meta.env.VITE_COINS_URL+'gold.png' : import.meta.env.VITE_COINS_URL+'silver.png'}  />
 
               
             )}

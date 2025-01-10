@@ -1,4 +1,4 @@
-import styled from '@emotion/styled';
+import styled from "@emotion/styled";
 export const RoomContainer = styled.div`
   padding: 20px;
   max-width: 800px;
@@ -74,13 +74,34 @@ export const NextButton = styled.button`
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  
+
   &:disabled {
     background: #ccc;
     cursor: not-allowed;
   }
-  
+
   &:hover:not(:disabled) {
     background: #0056b3;
   }
+`;
+
+export const RoomIdD = styled.div`
+  font-size: 1.2rem;
+  color: #666;
+  margin-top: -1rem;
+  margin-bottom: 2rem;
+  text-align: center;
+  font-style: italic;
+`;
+
+
+export const ChangeButton = styled.button`
+  padding: 5px 10px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  margin-left: 10px;
 `;

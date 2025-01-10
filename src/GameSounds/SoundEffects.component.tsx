@@ -68,7 +68,7 @@ export const deckSound = async () => {
 export const gameSound = async () => {
   const sound = new Howl({
     src: [await loadAudio({src: import.meta.env.VITE_AUDIO_URL+'GameMusic.mp3'})],
-    volume: 0.05,
+    volume: 0.04,
     html5: true,
     loop: true,
   });
@@ -96,7 +96,7 @@ export const grabSound = async () => {
 export const jokerSound = async () => {
   const sound = new Howl({
     src: [await loadAudio({src: import.meta.env.VITE_AUDIO_URL+'joker.mp3'})],
-    volume: 0.1,
+    volume: 0.05,
     html5: true,
   });
   sound.play();

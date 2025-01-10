@@ -1,8 +1,8 @@
 import styled from '@emotion/styled';
 
-export const CardSelectContainer = styled.div<{display:boolean}>`
+export const CardSelectContainer = styled.div<{displayProp:boolean}>`
   background-color: rgba(255, 255, 255, 0.9);
-  display: ${(props) => props.display ? 'block' : 'none'};
+  display: ${(props) => props.displayProp ? 'block' : 'none'};
  
 
   gap: 20px;

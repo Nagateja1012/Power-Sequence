@@ -5,19 +5,16 @@ import ImageLoader from '../AssetsLoader/imageLoader.component';
 import { useSelection } from '../GameBoard/gameboard.context';
 import { usePlayedCard } from '../PlayedCard/PlayedCard.context';
 import { usePlayerHand } from './playerHand.context';
-import { AlterCards, GrabCards } from '../Services/Service.Read';
 import { useCards } from '../GameScreens/CardSelect/CardSelect.context';
 import { useGrab } from '../Player/player.context';
-import { DropCardSend, GrabCardsSend, reverseCard, Skipcard } from '../Services/Service.Send';
-import { useAnimation } from '../GameAnimations/animation.context';
+
 import { useSuggestion } from '../GameScreens/Suggestion/Suggestion.context';
 import { useTurn } from '../Deck/deck.context';
+import { useWebSocket } from '../Services/websocket.services';
+import { useCurrentPlayer } from '../GameScreens/Room/player.context';
 
-interface ImageGalleryProps {
-  images: string[];
-}
 
-const ImageGallery: React.FC<ImageGalleryProps> = () => {
+const ImageGallery: React.FC = () => {
   const [scrollPosition, setScrollPosition] = useState(0);
   const [showButtons, setShowButtons] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -25,10 +22,95 @@ const ImageGallery: React.FC<ImageGalleryProps> = () => {
   const {setPlayedCard} = usePlayedCard();
   const {images, setImages} = usePlayerHand();
   const { setCards, setDisplay, dropCard, setdropCard,DropCardNum, setDropCardNum} = useCards()
-   const { setGrab, setplayerName, playerName, setgrabbedCard} = useGrab()
-   const { setaniamtionDisplay, setAnimationName} = useAnimation()
-   const {setSuggestion} = useSuggestion()
-   const {isYourTurn, setIsTurnCompleted} =useTurn()
+   const { setGrab, setplayerName,  setgrabbedCard} = useGrab()
+   const {setSuggestion, setSuggestionType} = useSuggestion()
+   const {isYourTurn, setIsTurnCompleted, setIsYourTurn} =useTurn()
+    const {  RoomId, currentPlayer } = useCurrentPlayer();
+    const {  messages, sendMessage } = useWebSocket();
+
+
+   
+     useEffect(() => {
+
+      if(messages[0]?.content?.currentPlayer === currentPlayer){
+        console.log(images.length)
+        if(images.length === 0){
+          setIsTurnCompleted(true)
+        }else{
+          setIsTurnCompleted(false)
+        }
+      }
+       if (messages[0]?.content?.cards) {
+
+          setImages(messages[0]?.content?.cards)
+          
+       }
+       
+       if(messages[0]?.type === 'Power'){
+        if(messages[0]?.content?.command === "Deck" && messages[0]?.content?.card ){
+          
+          setImages([...images, messages[0]?.content?.card])
+        }
+        
+        if(messages[0]?.content?.command === "Alter1" && messages[0]?.content?.cards ){
+          console.log("Alter1 use effect triggered")
+          setCards(messages[0]?.content?.cards)
+          setDisplay(true)
+        }
+        if(messages[0]?.content?.command === "Grab" && messages[0]?.content?.card && messages[0]?.content?.card != ''  ){
+          setgrabbedCard(messages[0]?.content?.card)
+          setDisplay(true)
+        }
+        if(messages[0]?.content?.command === "GrabFrom" ){
+          const returnPlayerid = messages[0]?.content?.returnPlayerid;
+          if(images.length > 0){
+          const randomIndex = Math.floor(Math.random() * images.length);
+          const grabbedCard = images[randomIndex];
+          const newImages = images.filter((_, i) => i !== randomIndex);
+          setImages(newImages); 
+          sendMessage({
+            action: "PowerCardAction",
+            Message: {
+              command: "GrabFrom",
+              roomId: RoomId,
+              currentPlayer: currentPlayer,
+              grabPlayer: returnPlayerid,
+              playerMove: grabbedCard
+            },
+          })
+        } else{
+          sendMessage({
+            action: "PowerCardAction",
+            Message: {
+              command: "GrabFrom",
+              roomId: RoomId,
+              currentPlayer: currentPlayer,
+              grabPlayer: returnPlayerid,
+              playerMove: ''
+        }});
+      }
+       
+       }
+      }
+
+
+       if(messages[0]?.type === 'PowerUpdate' 
+        && messages[0]?.content?.command === 'Drop'
+        &&  messages[0]?.content?.playerMove 
+        && messages[0]?.content?.currentPlayer === currentPlayer ){
+          setdropCard(true);
+          setSuggestionType('info')
+          setSuggestion("Drop a card or use your Drop card to increase the drop count for next player")
+          setDropCardNum(messages[0]?.content?.playerMove )
+
+        }
+
+       
+         
+     }, [messages]);
+
+
+     
 
   // Reset scroll position when images change
   useEffect(() => {
@@ -65,26 +147,56 @@ const ImageGallery: React.FC<ImageGalleryProps> = () => {
 ];  
 
 const HandleCard = (image: string, index:number) =>{
+  
   if(!isYourTurn){
     return
   }
   setIsTurnCompleted(true)
+  setIsYourTurn(false)
   setImages(images.filter((_, i) => i !== index))  
   setPlayedCard(image)
+  console.log(dropCard)
   if(dropCard){
     
     if(image === 'DROP'){
-      DropCardSend(DropCardNum+1);
+      console.log(DropCardNum)
+      sendMessage({
+        action: "PowerCardAction",
+        Message: {
+          command: "Drop",
+          roomId: RoomId,
+          currentPlayer: currentPlayer,
+          playerMove: DropCardNum + 1
+        },
+      })
       setDropCardNum(0)
+      setdropCard(false)
+      setIsTurnCompleted(false)
     }else{
-      setDropCardNum(DropCardNum-1)
-    }    
-    setdropCard(DropCardNum !== 0)
+      const dropcount = DropCardNum-1
+      setDropCardNum(dropcount)
+     
+    if(dropcount === 0){
+      sendMessage({
+        action: "PowerCardAction",
+        Message: {
+          command: "Drop1",
+          roomId: RoomId,
+          currentPlayer: currentPlayer,
+          lastPlayedCard: image
+        },
+      })
+      setIsTurnCompleted(false)
+    } 
+    setIsYourTurn(dropcount !== 0)
+    setdropCard(dropcount !== 0)
+  }
     
   } else {
 
   if(allcardvalues.includes(image)) {
-    setSuggestion('1')
+    console.log(image)
+    setSuggestion("Place a coin on the board")
     setIsSelectionActive('Place');
     setCardValue(image)
     
@@ -93,55 +205,76 @@ const HandleCard = (image: string, index:number) =>{
     //power
     switch (image) {
       case 'ALTER':
-        setAnimationName('alterfuture')
-        setaniamtionDisplay(true)
-        AlterCards();
-        setTimeout(() => {
-          setDisplay(true)}, 2000) ;
-    setCards(['R1','ALTER','B9','G5'])
+
+      sendMessage({
+        action: "PowerCardAction",
+        Message: {
+          command: "Alter1",
+          roomId: RoomId,
+          currentPlayer: currentPlayer,
+        },
+      })
+      setIsTurnCompleted(false)
         break;
       case 'DROP':
         
-        DropCardSend(1);
-        setAnimationName('drop')
-        setaniamtionDisplay(true)
+      sendMessage({
+        action: "PowerCardAction",
+        Message: {
+          command: "Drop",
+          roomId: RoomId,
+          currentPlayer: currentPlayer,
+          playerMove: 1
+        },
+      })
+      setIsTurnCompleted(false)
         break;
       case 'GRAB':
-        setSuggestion('3')
-        setAnimationName('grab')
-        setaniamtionDisplay(true)
+        setSuggestion("Select a player to grab a card")
+
+
         setGrab(true)
-        GrabCardsSend(playerName)
+        
         setCards(['back','back','back','back'])
-        setgrabbedCard(GrabCards())
         setplayerName("")
         break;
       case 'SKIP':
-        setAnimationName('skip')
-        setaniamtionDisplay(true)
-        Skipcard()
+        setIsTurnCompleted(false)
+        sendMessage({
+          action: "PowerCardAction",
+          Message: {
+            command: "Skip",
+            roomId: RoomId,
+            currentPlayer: currentPlayer,
+          },
+        })
         break;
       case 'REVERSE':
-        setAnimationName('reverse')
-        setaniamtionDisplay(true)
-        reverseCard();
+        setIsTurnCompleted(false)
+        sendMessage({
+          action: "PowerCardAction",
+          Message: {
+            command: "Reverse",
+            roomId: RoomId,
+            currentPlayer: currentPlayer,
+          },
+        })
         break;
       case 'ERASE':
-        setSuggestion('7')
-        setAnimationName('eraser')
-        setaniamtionDisplay(true)
+        setIsTurnCompleted(false)
+        setSuggestion("Remove a coin from the board that is not in a claimed sequence")
+
         setIsSelectionActive("Erase");
       break;
       case 'JOKER': 
-      setSuggestion('6')
-      setAnimationName('joker')
-        setaniamtionDisplay(true)
+      setSuggestion("Place a coin in any non-filled cell")
+
         setIsSelectionActive("Joker");  
         break;
       case 'DESTROY':
-        setSuggestion('4')
-        setAnimationName('explosion')
-        setaniamtionDisplay(true)
+       
+        setSuggestion("Select the Sequence to destroy")
+
         setIsSelectionActive('Destroy');
         break;
     }
@@ -149,22 +282,21 @@ const HandleCard = (image: string, index:number) =>{
   }
 }
   return (
-    <div style={{ position: 'relative', marginTop: '55%' }}>
+    <div style={{ position: 'relative', marginTop:'65vh' }}>
       <div
         ref={containerRef}
         style={{
           display: 'flex',
           overflowX: 'hidden',
+          overflowY: 'hidden',
           scrollBehavior: 'smooth',
         }}
       >
         {images.map((image, index) => (
-          <div onClick = {() => HandleCard(image, index)}>
+          <div key={`${image}-${index}`} onClick={() => HandleCard(image, index)}>
           <ImageLoader
-
-            src={ import.meta.env.VITE_CARDS_URL+image+'.png'}
+            src={import.meta.env.VITE_CARDS_URL+image+'.png'}
             StyledImg={PlayerCardImg}
-            
       />
       </div>
         ))}
