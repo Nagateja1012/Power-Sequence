@@ -30,6 +30,9 @@ const removeCardFromDeck = (imageName: string, cards: string[]): string[] => {
           key={index}
           draggable
           onClick={() => {
+            if(imageName=== ''){
+              return
+            }
             if(imageName !== 'back'){
             setImages( [...images, imageName])
             sendMessage({

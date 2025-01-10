@@ -21,7 +21,7 @@ interface PlayerData {
 export function CreatePlayerElements(): JSX.Element[] {
   const {grab, setGrab} = useGrab()
    const {  setDisplay} = useCards()
-   const [players, setPlayers]= useState<PlayerData[]>([{"name":"vishal","playerId":"AK0p5r","teamId":"1"},{"name":"bharat","playerId":"JP1d71","teamId":"2"},{"name":"vishal","playerId":"AKfe0p5r","teamId":"1"},{"name":"bharat","playerId":"JP1dbfb71","teamId":"2"},{"name":"vishal","playerId":"AKwefe0p5r","teamId":"1"},{"name":"bharat","playerId":"JP1hgtd71","teamId":"2"},{"name":"vishal","playerId":"AKkuju0p5r","teamId":"1"},{"name":"bharat","playerId":"JP1djefefy71","teamId":"2"},{"name":"bharat","playerId":"JP1faefeadjy71","teamId":"2"},{"name":"bharat","playerId":"JP1feafedjy71","teamId":"2"},{"name":"bharat","playerId":"JP1ddfsejy71","teamId":"2"},{"name":"bharat","playerId":"JP1ddfefaesejy71","teamId":"2"}]);
+   const [players, setPlayers]= useState<PlayerData[]>([]);
      const {  messages, sendMessage } = useWebSocket();
     const {  RoomId, currentPlayer } = useCurrentPlayer();
     const [locPlayeID, setlocPlayeID] = useState<string>("");

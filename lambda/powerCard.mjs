@@ -205,31 +205,37 @@ case 'Destroy':
      const destroyNext = getNextPlayer(isreverse, currentPlayer, orderedPlayers)
 // Function to check if arrays are equal regardless of element order
 const areArraysEqual = (arr1, arr2) => {
+  console.log('from user', arr1,'from game', arr2 )
   if (arr1.length !== arr2.length) return false;
-  const sorted1 = [...arr1].sort();
-  const sorted2 = [...arr2].sort();
-  return sorted1.every((val, idx) => val === sorted2[idx]);
+  const sorted1 = [...arr1].sort((a,b) => a[0] === b[0] ? a[1] - b[1] : a[0] - b[0]);
+  const sorted2 = [...arr2].sort((a,b) => a[0] === b[0] ? a[1] - b[1] : a[0] - b[0]);
+  console.log('from user', arr1,'from game', arr2 ,'sorted')
+  console.log(sorted1.every((val, idx) => val[0] === sorted2[idx][0] && val[1] === sorted2[idx][1]))
+  return sorted1.every((val, idx) => val[0] === sorted2[idx][0] && val[1] === sorted2[idx][1]);
 };
 
 // Function to check sequence match and return index
 const checkSequenceMatch = (playerSequence, teamSequences) => {
   for (let i = 0; i < teamSequences.length; i++) {
-    if (areArraysEqual(playerSequence, teamSequences[i])) {
+    if (areArraysEqual(playerSequence[0], teamSequences[i])) {
       teamSequences.splice(i, 1); // Remove matched sequence
       return i;
     }
   }
   return -1;
 };
-
+console.log('from user', playerMove)
+console.log('from game', teamsequence)
 const index = checkSequenceMatch(playerMove, teamsequence)
+
 if(index != -1){
+  numsequence[index] = numsequence[index] - 1  
   await updateGameState(roomId, "SET numsequence = :numsequence, teamsequence = :teamsequence", {
-    ":numsequence": numsequence[index] - 1,
+    ":numsequence": numsequence,
     ":teamsequence": teamsequence
   })
     await broadcastToPlayers(playersInRoom,{type: "PowerUpdate",
-   content: { command:'Destroy', currentPlayer: orderedPlayers[destroyNext].playerId,lastPlayedCard:'Destroy', playerMove:playerMove }})
+   content: { command:'Destroy', currentPlayer: orderedPlayers[destroyNext].playerId,lastPlayedCard:'DESTROY', playerMove:playerMove }})
    await updateGameState(roomId, "SET currentPlayer = :skipNextplayer", {
     ":skipNextplayer": destroyNext
   });
@@ -366,9 +372,8 @@ return response;
 case 'Drop':
     const dropNext = getNextPlayer(isreverse, currentPlayer, orderedPlayers)
     
-console.log(dropNext)
     await broadcastToPlayers(playersInRoom,{type: "PowerUpdate",
-    content: {  currentPlayer: orderedPlayers[dropNext].playerId,lastPlayedCard:'DROP', playerMove }})
+    content: {  currentPlayer: orderedPlayers[dropNext].playerId,lastPlayedCard:'DROP', playerMove, command: 'Drop' }})
     await updateGameState(roomId, "SET currentPlayer = :skipNextplayer", {
         ":skipNextplayer": dropNext
       });

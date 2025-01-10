@@ -9,6 +9,7 @@ import { useSelection } from "./gameboard.context";
 import { useWebSocket } from "../Services/websocket.services";
 import { useCurrentPlayer } from "../GameScreens/Room/player.context";
 import { usePlayedCard } from "../PlayedCard/PlayedCard.context";
+import { useTurn } from "../Deck/deck.context";
 
 
 
@@ -21,7 +22,7 @@ const GameBoard: React.FC = () => {
     [7, 7],
   ];
 
-  const tempgrid =[[{"value":-1,"color":"#ffffff","hasIcon":true},{"value":6,"color":"#accaff","hasIcon":true},{"value":4,"color":"#a9e77f","hasIcon":false},{"value":9,"color":"#accaff","hasIcon":false},{"value":0,"color":"#fa6666","hasIcon":false},{"value":8,"color":"#fa6666","hasIcon":false},{"value":8,"color":"#accaff","hasIcon":false},{"value":-1,"color":"#ffffff","hasIcon":true}],[{"value":4,"color":"#a9e77f","hasIcon":false},{"value":2,"color":"#a9e77f","hasIcon":false},{"value":5,"color":"#accaff","hasIcon":false},{"value":9,"color":"#fa6666","hasIcon":false},{"value":5,"color":"#a9e77f","hasIcon":false},{"value":9,"color":"#a9e77f","hasIcon":false},{"value":7,"color":"#accaff","hasIcon":false},{"value":8,"color":"#accaff","hasIcon":false}],[{"value":3,"color":"#a9e77f","hasIcon":false},{"value":1,"color":"#a9e77f","hasIcon":false},{"value":5,"color":"#accaff","hasIcon":false},{"value":1,"color":"#accaff","hasIcon":false},{"value":8,"color":"#a9e77f","hasIcon":false},{"value":7,"color":"#a9e77f","hasIcon":false},{"value":3,"color":"#accaff","hasIcon":false},{"value":9,"color":"#a9e77f","hasIcon":false}],[{"value":1,"color":"#fa6666","hasIcon":false},{"value":7,"color":"#accaff","hasIcon":false},{"value":9,"color":"#fa6666","hasIcon":false},{"value":0,"color":"#accaff","hasIcon":false},{"value":2,"color":"#fa6666","hasIcon":false},{"value":2,"color":"#fa6666","hasIcon":false},{"value":4,"color":"#accaff","hasIcon":false},{"value":2,"color":"#accaff","hasIcon":false}],[{"value":1,"color":"#a9e77f","hasIcon":false},{"value":2,"color":"#a9e77f","hasIcon":false},{"value":5,"color":"#a9e77f","hasIcon":false},{"value":3,"color":"#fa6666","hasIcon":false},{"value":7,"color":"#a9e77f","hasIcon":false},{"value":3,"color":"#accaff","hasIcon":false},{"value":0,"color":"#fa6666","hasIcon":false},{"value":4,"color":"#accaff","hasIcon":false}],[{"value":7,"color":"#fa6666","hasIcon":false},{"value":8,"color":"#a9e77f","hasIcon":false},{"value":3,"color":"#fa6666","hasIcon":false},{"value":6,"color":"#a9e77f","hasIcon":false},{"value":7,"color":"#fa6666","hasIcon":false},{"value":0,"color":"#accaff","hasIcon":false},{"value":0,"color":"#a9e77f","hasIcon":false},{"value":5,"color":"#fa6666","hasIcon":false}],[{"value":4,"color":"#fa6666","hasIcon":false},{"value":3,"color":"#a9e77f","hasIcon":false},{"value":2,"color":"#accaff","hasIcon":false},{"value":5,"color":"#fa6666","hasIcon":false},{"value":1,"color":"#accaff","hasIcon":false},{"value":4,"color":"#fa6666","hasIcon":false},{"value":0,"color":"#a9e77f","hasIcon":false},{"value":1,"color":"#fa6666","hasIcon":false}],[{"value":-1,"color":"#ffffff","hasIcon":true},{"value":6,"color":"#accaff","hasIcon":false},{"value":8,"color":"#fa6666","hasIcon":false},{"value":6,"color":"#a9e77f","hasIcon":false},{"value":6,"color":"#fa6666","hasIcon":false},{"value":6,"color":"#fa6666","hasIcon":false},{"value":9,"color":"#accaff","hasIcon":false},{"value":-1,"color":"#ffffff","hasIcon":true}]]
+  const tempgrid =[[{"value":-1,"color":"#ffffff","hasIcon":true},{"value":6,"color":"#accaff","hasIcon":true},{"value":4,"color":"#a9e77f","hasIcon":true},{"value":9,"color":"#accaff","hasIcon":true},{"value":0,"color":"#fa6666","hasIcon":true},{"value":8,"color":"#fa6666","hasIcon":false},{"value":8,"color":"#accaff","hasIcon":false},{"value":-1,"color":"#ffffff","hasIcon":true}],[{"value":4,"color":"#a9e77f","hasIcon":false},{"value":2,"color":"#a9e77f","hasIcon":false},{"value":5,"color":"#accaff","hasIcon":false},{"value":9,"color":"#fa6666","hasIcon":false},{"value":5,"color":"#a9e77f","hasIcon":false},{"value":9,"color":"#a9e77f","hasIcon":false},{"value":7,"color":"#accaff","hasIcon":false},{"value":8,"color":"#accaff","hasIcon":false}],[{"value":3,"color":"#a9e77f","hasIcon":false},{"value":1,"color":"#a9e77f","hasIcon":false},{"value":5,"color":"#accaff","hasIcon":false},{"value":1,"color":"#accaff","hasIcon":false},{"value":8,"color":"#a9e77f","hasIcon":false},{"value":7,"color":"#a9e77f","hasIcon":false},{"value":3,"color":"#accaff","hasIcon":false},{"value":9,"color":"#a9e77f","hasIcon":false}],[{"value":1,"color":"#fa6666","hasIcon":false},{"value":7,"color":"#accaff","hasIcon":false},{"value":9,"color":"#fa6666","hasIcon":false},{"value":0,"color":"#accaff","hasIcon":false},{"value":2,"color":"#fa6666","hasIcon":false},{"value":2,"color":"#fa6666","hasIcon":false},{"value":4,"color":"#accaff","hasIcon":false},{"value":2,"color":"#accaff","hasIcon":false}],[{"value":1,"color":"#a9e77f","hasIcon":false},{"value":2,"color":"#a9e77f","hasIcon":false},{"value":5,"color":"#a9e77f","hasIcon":false},{"value":3,"color":"#fa6666","hasIcon":false},{"value":7,"color":"#a9e77f","hasIcon":false},{"value":3,"color":"#accaff","hasIcon":false},{"value":0,"color":"#fa6666","hasIcon":false},{"value":4,"color":"#accaff","hasIcon":false}],[{"value":7,"color":"#fa6666","hasIcon":false},{"value":8,"color":"#a9e77f","hasIcon":false},{"value":3,"color":"#fa6666","hasIcon":false},{"value":6,"color":"#a9e77f","hasIcon":false},{"value":7,"color":"#fa6666","hasIcon":false},{"value":0,"color":"#accaff","hasIcon":false},{"value":0,"color":"#a9e77f","hasIcon":false},{"value":5,"color":"#fa6666","hasIcon":false}],[{"value":4,"color":"#fa6666","hasIcon":false},{"value":3,"color":"#a9e77f","hasIcon":false},{"value":2,"color":"#accaff","hasIcon":false},{"value":5,"color":"#fa6666","hasIcon":false},{"value":1,"color":"#accaff","hasIcon":false},{"value":4,"color":"#fa6666","hasIcon":false},{"value":0,"color":"#a9e77f","hasIcon":false},{"value":1,"color":"#fa6666","hasIcon":false}],[{"value":-1,"color":"#ffffff","hasIcon":true},{"value":6,"color":"#accaff","hasIcon":false},{"value":8,"color":"#fa6666","hasIcon":false},{"value":6,"color":"#a9e77f","hasIcon":false},{"value":6,"color":"#fa6666","hasIcon":false},{"value":6,"color":"#fa6666","hasIcon":false},{"value":9,"color":"#accaff","hasIcon":false},{"value":-1,"color":"#ffffff","hasIcon":true}]]
    const { messages,sendMessage,draftMessage } = useWebSocket();
    
    useEffect(() => {
@@ -57,16 +58,9 @@ const GameBoard: React.FC = () => {
 
   if (messages[0]?.type === 'PowerUpdate' && messages[0]?.content?.command === 'Destroy' ) {
     setPlayedCard(messages[0]?.content?.lastPlayedCard)
-    const coins = messages[0]?.content?.playerMove;
+    const coins = messages[0]?.content?.playerMove[0];
     if(coins){
-      coins.forEach((coin: number[]) => {
-        const newGrid = grid.map((row) => [...row]);
-        newGrid[coin[0]][coin[1]] = {
-          ...newGrid[coin[0]][coin[1]],
-          hasIcon: false,
-        }
-        setGrid(newGrid);
-      });
+      DestoryCoins(coins)
     }
       
 }
@@ -75,15 +69,18 @@ const GameBoard: React.FC = () => {
     
    }, [messages]);
 
-  const [grid, setGrid] = useState<CellData[][]>(tempgrid);
+  const [grid, setGrid] = useState<CellData[][]>([]);
   const {isSelectionActive, setIsSelectionActive, CardValue, setCardValue} = useSelection();
   const [maxSelectionLimit, setMaxSelectionLimit] = useState(5);
   const [selectedCellIndex, setSelectedCellIndex] = useState<number[][]>([]);
   const {RoomId, curTeam, currentPlayer} =useCurrentPlayer()
   const {PlayedCard,setPlayedCard} = usePlayedCard();
+  const {isTurnCompleted} =useTurn()
 
 
-
+useEffect(()=>{
+  if(!isTurnCompleted) setSelectedCellIndex([])
+},[isTurnCompleted])
 
   const handleCellClick = (row: number, col: number) => {
     
@@ -92,17 +89,19 @@ const GameBoard: React.FC = () => {
         !selectedCellIndex.some(([r, c]) => r === row && c === col) &&
         grid[row][col].hasIcon 
       ) {
+        let maxLimit = maxSelectionLimit;
         if (corners.some(([r, c]) => r === row && c === col)) {
-          setMaxSelectionLimit(4);
+          maxLimit = 4;
+          setMaxSelectionLimit( maxLimit);
         }
         const selectedcells = [...selectedCellIndex, [row, col]];
         setSelectedCellIndex(selectedcells);
 
-        if (selectedcells.length === maxSelectionLimit) {
-          if (maxSelectionLimit === 4) setMaxSelectionLimit(5);
+        if (selectedcells.length === maxLimit) {
+          if (maxLimit === 4) setMaxSelectionLimit(5);
           if(arePointsInLine(selectedcells)){
               console.log(selectedcells)
-              DestoryCoins();
+
               // send message to the server about the remove of the coins
               sendMessage({ action: "PowerCardAction", Message: { roomId:RoomId, command : "Destroy", playerMove: [selectedcells], currentPlayer } })
           }
@@ -116,15 +115,18 @@ const GameBoard: React.FC = () => {
           !selectedCellIndex.some(([r, c]) => r === row && c === col) &&
           grid[row][col].hasIcon && (grid[row][col].player === curTeam ||corners.some(([r, c]) => r === row && c === col))
         ) {
+          let maxLimit = maxSelectionLimit;
           if (corners.some(([r, c]) => r === row && c === col)) {
-            setMaxSelectionLimit(4);
+            maxLimit = 4;
+            setMaxSelectionLimit( maxLimit);
           }
           const selectedcells = [...selectedCellIndex, [row, col]];
           setSelectedCellIndex(selectedcells);
   
-          if (selectedcells.length === maxSelectionLimit) {
-            if (maxSelectionLimit === 4) setMaxSelectionLimit(5);
+          if (selectedcells.length === maxLimit) {
+            if (maxLimit === 4) setMaxSelectionLimit(5);
             if(arePointsInLine(selectedcells)){
+              
               sendMessage({ action: "sendMove", Message: { roomId:RoomId, command : "Claim", playerMove: [[Number(curTeam),0],...selectedcells], lastPlayedCard: PlayedCard, currentPlayer } })
             }
             setIsSelectionActive('');        
@@ -171,21 +173,18 @@ const GameBoard: React.FC = () => {
     
   };
 
-  const DestoryCoins = ()=>{
-    selectedCellIndex.forEach(([row, col]) => {
-      
-      if (grid[row][col].value !== -1){
-        const newGrid = grid.map((row) => [...row]);
-        console.log(newGrid)
-        newGrid[row][col] = {
-          ...newGrid[row][col],
-          hasIcon: false,
-          player: curTeam ? (curTeam as "1" | "2" | "3") : undefined,        };
-        setGrid(newGrid);
-      }
-  
-});  } 
-
+  const DestoryCoins = (selectedcells: number[][] | [any, any][])=>{
+  const newGrid = grid.map((row) => [...row]);
+  selectedcells.forEach(([row, col]) => {
+    if (grid[row][col].value !== -1){
+      newGrid[row][col] = {
+        ...newGrid[row][col],
+        hasIcon: false
+      };
+    }
+  });
+  setGrid(newGrid);
+} 
   return (
     <div style={{ position: 'relative' }}>
       <BoardRender

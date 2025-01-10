@@ -23,18 +23,29 @@ const ImageGallery: React.FC = () => {
   const {images, setImages} = usePlayerHand();
   const { setCards, setDisplay, dropCard, setdropCard,DropCardNum, setDropCardNum} = useCards()
    const { setGrab, setplayerName,  setgrabbedCard} = useGrab()
-   const {setSuggestion} = useSuggestion()
+   const {setSuggestion, setSuggestionType} = useSuggestion()
    const {isYourTurn, setIsTurnCompleted, setIsYourTurn} =useTurn()
     const {  RoomId, currentPlayer } = useCurrentPlayer();
     const {  messages, sendMessage } = useWebSocket();
+
+
    
      useEffect(() => {
+
+      if(messages[0]?.content?.currentPlayer === currentPlayer){
+        console.log(images.length)
+        if(images.length === 0){
+          setIsTurnCompleted(true)
+        }else{
+          setIsTurnCompleted(false)
+        }
+      }
        if (messages[0]?.content?.cards) {
-        // change here 
-          // setImages(messages[0]?.content?.cards)
-          // setImages(["SKIP","REVERSE","ERASE","ALTER","GRAB","JOKER","DROP","JOKER"])
-          setImages(["SKIP","REVERSE","ERASE","ALTER","GRAB","JOKER","DROP","JOKER","JOKER","JOKER","JOKER","JOKER","JOKER","JOKER","JOKER","JOKER","JOKER","DESTROY", "DESTROY"])
+
+          setImages(messages[0]?.content?.cards)
+          
        }
+       
        if(messages[0]?.type === 'Power'){
         if(messages[0]?.content?.command === "Deck" && messages[0]?.content?.card ){
           
@@ -46,12 +57,13 @@ const ImageGallery: React.FC = () => {
           setCards(messages[0]?.content?.cards)
           setDisplay(true)
         }
-        if(messages[0]?.content?.command === "Grab" && messages[0]?.content?.card ){
+        if(messages[0]?.content?.command === "Grab" && messages[0]?.content?.card && messages[0]?.content?.card != ''  ){
           setgrabbedCard(messages[0]?.content?.card)
           setDisplay(true)
         }
         if(messages[0]?.content?.command === "GrabFrom" ){
           const returnPlayerid = messages[0]?.content?.returnPlayerid;
+          if(images.length > 0){
           const randomIndex = Math.floor(Math.random() * images.length);
           const grabbedCard = images[randomIndex];
           const newImages = images.filter((_, i) => i !== randomIndex);
@@ -66,17 +78,31 @@ const ImageGallery: React.FC = () => {
               playerMove: grabbedCard
             },
           })
-        }
+        } else{
+          sendMessage({
+            action: "PowerCardAction",
+            Message: {
+              command: "GrabFrom",
+              roomId: RoomId,
+              currentPlayer: currentPlayer,
+              grabPlayer: returnPlayerid,
+              playerMove: ''
+        }});
+      }
+       
        }
+      }
 
 
        if(messages[0]?.type === 'PowerUpdate' 
+        && messages[0]?.content?.command === 'Drop'
         &&  messages[0]?.content?.playerMove 
         && messages[0]?.content?.currentPlayer === currentPlayer ){
           setdropCard(true);
-         
+          setSuggestionType('info')
+          setSuggestion("Drop a card or use your Drop card to increase the drop count for next player")
           setDropCardNum(messages[0]?.content?.playerMove )
-          console.log("useeffect",dropCard)
+
         }
 
        
@@ -144,10 +170,13 @@ const HandleCard = (image: string, index:number) =>{
         },
       })
       setDropCardNum(0)
+      setdropCard(false)
+      setIsTurnCompleted(false)
     }else{
-      setDropCardNum(DropCardNum-1)
-    }   
-    if(DropCardNum-1 === 0){
+      const dropcount = DropCardNum-1
+      setDropCardNum(dropcount)
+     
+    if(dropcount === 0){
       sendMessage({
         action: "PowerCardAction",
         Message: {
@@ -159,7 +188,9 @@ const HandleCard = (image: string, index:number) =>{
       })
       setIsTurnCompleted(false)
     } 
-    setdropCard(DropCardNum !== 0)
+    setIsYourTurn(dropcount !== 0)
+    setdropCard(dropcount !== 0)
+  }
     
   } else {
 
@@ -257,6 +288,7 @@ const HandleCard = (image: string, index:number) =>{
         style={{
           display: 'flex',
           overflowX: 'hidden',
+          overflowY: 'hidden',
           scrollBehavior: 'smooth',
         }}
       >

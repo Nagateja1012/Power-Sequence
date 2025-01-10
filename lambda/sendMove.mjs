@@ -135,14 +135,14 @@ export const handler = async (event) => {
         count + (sequenceClaimed.some(claimed => 
           JSON.stringify(claimed) === JSON.stringify(seq)) ? 1 : 0), 0);
 
-      if (matchingSequences > 3) {
+      if (matchingSequences > 2) {
         const player = playersInRoom.find(p => p.playerId === playerId);
         await webClient.send(
           new PostToConnectionCommand({
             ConnectionId: player.clientId,
             Data: JSON.stringify({
               type: "error",
-              content: {error: "More than 3 coins from previous sequences detected in claim"}
+              content: {error: "More than 2 coins from previous sequences detected in claim"}
             })
           })
         );

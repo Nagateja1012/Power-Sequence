@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
+import { useSuggestion } from '../GameScreens/Suggestion/Suggestion.context';
 
 
 // WebSocket message interface for received messages
@@ -30,11 +31,13 @@ export const WebSocketProvider: React.FC<{children: React.ReactNode}> = ({ child
   const [messages, setMessages] = useState<WebSocketMessage[]>([]);
   const [draft, setDraft] = useState<MoveMessage | null>(null);
 
+
   useEffect(() => {
     // Replace with your AWS API Gateway WebSocket URL
     const ws = new WebSocket('wss://dgu6c735ck.execute-api.us-east-1.amazonaws.com/production/');
 
     ws.onopen = () => {
+
       console.log('WebSocket connected');
       setSocket(ws);
     };
@@ -50,6 +53,7 @@ export const WebSocketProvider: React.FC<{children: React.ReactNode}> = ({ child
     };
 
     ws.onclose = () => {
+
       console.log('WebSocket disconnected');
       setSocket(null);
     };
@@ -69,9 +73,7 @@ export const WebSocketProvider: React.FC<{children: React.ReactNode}> = ({ child
     if (socket && socket.readyState === WebSocket.OPEN) {
       console.log('Sending message:', message);
       socket.send(JSON.stringify(message));
-    } else {
-      console.error('WebSocket is not open');
-    }
+    } 
   };
 
   const draftMessage = (message: MoveMessage): void => {

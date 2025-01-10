@@ -27,9 +27,8 @@ padding: 2px;
   text-align: center;
   color:  rgb(255, 255, 255);
   font-size: 1.2rem;
-  font-weight: 500;
-  white-space: nowrap;
-  letter-spacing: 2px;
+  font-weight: 500; 
+ letter-spacing: 2px;
 
   text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
 `;

@@ -5,6 +5,7 @@ import React, { useEffect, useState } from 'react';
 import { GameEndButton, ResultContainer, ResultText } from './GameEnd.styles';
 import { useWebSocket } from '../../Services/websocket.services';
 import { useCurrentPlayer } from '../Room/player.context';
+import { lostSound, winSound } from '../../GameSounds/SoundEffects.component';
 
 
 
@@ -19,6 +20,13 @@ const GameResult: React.FC = () => {
     if (messages[0]?.type === "Winner") {
       setGameOver(true)
       setTeam(messages[0]?.content?.Team)
+      console.log(messages[0]?.content?.Team === curTeam)
+     if(messages[0]?.content?.Team === curTeam ){
+      console.log('winnershound')
+      winSound()
+     } else{
+      lostSound()
+     }
     }
   }, [messages]);
   return (

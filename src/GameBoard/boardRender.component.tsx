@@ -5,6 +5,7 @@ import ImageLoader from '../AssetsLoader/imageLoader.component';
 
 
 
+
 interface BoardRenderProps {
   grid: CellData[][];
   selectedCellIndex: number[][];
@@ -29,7 +30,7 @@ return (
           <Cell
             key={`${rowIndex}-${colIndex}`}
             backgroundColor={cell.color}
-            isClicked={selectedCellIndex.some(([r,c]) => r === rowIndex && c === colIndex)}
+            isClicked={ selectedCellIndex.some(([r,c]) => r === rowIndex && c === colIndex)}
             onClick={() => 
                onCellClick(rowIndex, colIndex)}
           >

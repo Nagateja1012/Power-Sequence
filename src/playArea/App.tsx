@@ -15,9 +15,9 @@ import CardSelect from "../GameScreens/CardSelect/CardSelect.component";
 import { useSelection } from "../GameBoard/gameboard.context";
 
 import { useState, useEffect } from "react";
-import { GameLobbyDataService } from "../Services/Service.Send";
+
 import { GameFormData } from "../models/model";
-import { RoomScreenReadService } from "../Services/Service.Read";
+
 
 
 import { useCurrentPlayer } from "../GameScreens/Room/player.context";
@@ -30,6 +30,7 @@ import { useTurn } from "../Deck/deck.context";
 import { useWebSocket } from "../Services/websocket.services";
 
 import { usePlayedCard } from "../PlayedCard/PlayedCard.context";
+import { gameSound, sequenceSound } from "../GameSounds/SoundEffects.component";
 
 function App() {
 
@@ -37,7 +38,7 @@ function App() {
 
   const { setIsSelectionActive } = useSelection();
   const { setCurrentPlayer, RoomId, currentPlayer } = useCurrentPlayer();
-  const [currentScreen, setCurrentScreen] = useState("game");
+  const [currentScreen, setCurrentScreen] = useState("gameForm");
   // const { images, setImages  } = usePlayerHand();
   // const { setdropCard, setDropCardNum } = useCards();
   const { setSuggestion, setSuggestionType } = useSuggestion();
@@ -53,6 +54,11 @@ function App() {
       setCurrentScreen(messages[0].content.currentScreen);
     }
     if ( messages[0]?.content?.currentPlayer) {
+      if(messages[0]?.content?.currentPlayer === currentPlayer){
+        setSuggestionType('info')
+        setSuggestion("It's your turn")
+      }
+     
       setIsYourTurn(messages[0]?.content?.currentPlayer === currentPlayer)
     }
     if(messages[0]?.type === 'error'){
@@ -60,6 +66,7 @@ function App() {
         setSuggestion(messages[0]?.content?.error)
     }
     if(messages[0]?.type === 'sequence'){
+      sequenceSound()
       setSuggestionType('sequence')
         setSuggestion(messages[0]?.content?.info)
     }
@@ -70,8 +77,13 @@ function App() {
       
   }, [messages]);
 
+  useEffect(() => {
+    if (currentScreen === "game") {
+      gameSound()
+    }
+  }, [currentScreen])
+
   const handleGameFormSubmit = (formData: GameFormData) => {
-    GameLobbyDataService(formData);
     sendMessage( { action: "createGame", Message: formData })
     setCurrentPlayer(formData.PlayerUseName);
   };
@@ -81,7 +93,6 @@ function App() {
       playerId: currentPlayer
     } })
   };
-  RoomScreenReadService();
   const handleDeck = () => {
     if (isYourTurn) {
       sendMessage({
@@ -158,7 +169,7 @@ function App() {
           />
           <CardSelect />
         </div>
-      )}
+      ) }
       <GameResult></GameResult>
       <SuggestionText></SuggestionText>
       <h1>{} </h1>
