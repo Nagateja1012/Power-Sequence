@@ -18,8 +18,6 @@ import { useState, useEffect } from "react";
 
 import { GameFormData } from "../Common/models/model";
 
-
-
 import { useCurrentPlayer } from "../GameScreens/Room/Room.context";
 import GameForm from "../GameScreens/lobby/lobby.component";
 import RoomScreen from "../GameScreens/Room/Room.component";
@@ -30,67 +28,73 @@ import { useTurn } from "./deck.context";
 import { useWebSocket } from "../Services/websocket.services";
 
 import { usePlayedCard } from "../PlayedCard/PlayedCard.context";
-import { gameSound, sequenceSound } from "../Common/GameSounds/SoundEffects.component";
-
+import {
+  gameSound,
+  sequenceSound,
+} from "../Common/GameSounds/SoundEffects.component";
 
 function App() {
-
- 
-
   const { setIsSelectionActive } = useSelection();
   const { setCurrentPlayer, RoomId, currentPlayer } = useCurrentPlayer();
   const [currentScreen, setCurrentScreen] = useState("gameForm");
   const { setSuggestion, setSuggestionType } = useSuggestion();
-  const { isYourTurn, setIsTurnCompleted, setIsYourTurn , isTurnCompleted} = useTurn();
-  const { sendMessage, messages , sendDraft, draft} = useWebSocket();
-   const {PlayedCard} = usePlayedCard();
- 
-  
+  const { isYourTurn, setIsTurnCompleted, setIsYourTurn, isTurnCompleted } =
+    useTurn();
+  const { sendMessage, messages, sendDraft, draft } = useWebSocket();
+  const { PlayedCard } = usePlayedCard();
 
   useEffect(() => {
+    const message = messages[0];
+    if (message?.content?.currentScreen) {
+      setCurrentScreen(message.content.currentScreen);
+    }
 
-    if (messages[0]?.content?.currentScreen) {
-      setCurrentScreen(messages[0].content.currentScreen);
-    }
-    if ( messages[0]?.content?.currentPlayer) {
-      if(messages[0]?.content?.currentPlayer === currentPlayer){
-        setSuggestionType('info')
-        setSuggestion("It's your turn")
+    if (message?.content?.currentPlayer) {
+      const isPlayersTurn = message.content.currentPlayer === currentPlayer;
+      if (isPlayersTurn) {
+        setSuggestionType("info");
+        setSuggestion("It's your turn");
       }
-     
-      setIsYourTurn(messages[0]?.content?.currentPlayer === currentPlayer)
+      setIsYourTurn(isPlayersTurn);
     }
-    if(messages[0]?.type === 'error'){
-      setSuggestionType('error')
-        setSuggestion(messages[0]?.content?.error)
+
+    if (message?.type) {
+      switch (message.type) {
+        case "error":
+          setSuggestionType("error");
+          setSuggestion(message.content.error);
+          break;
+        case "sequence":
+          sequenceSound();
+          setSuggestionType("sequence");
+          setSuggestion(message.content.info);
+          break;
+        case "info":
+          setSuggestionType("info");
+          setSuggestion(message.content.info);
+          break;
+      }
     }
-    if(messages[0]?.type === 'sequence'){
-      sequenceSound()
-      setSuggestionType('sequence')
-        setSuggestion(messages[0]?.content?.info)
-    }
-    if(messages[0]?.type === 'info'){
-      setSuggestionType('info')
-        setSuggestion(messages[0]?.content?.info)
-    }
-      
   }, [messages]);
 
   useEffect(() => {
     if (currentScreen === "game") {
-      gameSound()
+      gameSound();
     }
-  }, [currentScreen])
+  }, [currentScreen]);
 
   const handleGameFormSubmit = (formData: GameFormData) => {
-    sendMessage( { action: "createGame", Message: formData })
+    sendMessage({ action: "createGame", Message: formData });
     setCurrentPlayer(formData.PlayerUseName);
   };
   const handleRoomScreenComplete = () => {
-    sendMessage( { action: "GameStart", Message: {
-      roomId: RoomId, 
-      playerId: currentPlayer
-    } })
+    sendMessage({
+      action: "GameStart",
+      Message: {
+        roomId: RoomId,
+        playerId: currentPlayer,
+      },
+    });
   };
   const handleDeck = () => {
     if (isYourTurn) {
@@ -101,7 +105,7 @@ function App() {
           roomId: RoomId,
           currentPlayer: currentPlayer,
         },
-      })
+      });
       setIsTurnCompleted(false);
     }
   };
@@ -118,10 +122,9 @@ function App() {
       {currentScreen === "game" && (
         <div>
           <GameBoardStyle>
-            <GameBoard  />
+            <GameBoard />
           </GameBoardStyle>
-          <CreatePlayerElements
-          />
+          <CreatePlayerElements />
           <Deck onClick={handleDeck}>
             <ImageLoader
               src={import.meta.env.VITE_ASSETS_URL + "deck.png"}
@@ -129,46 +132,42 @@ function App() {
             />
           </Deck>
           <CardPlayed />
-          <ClaimButton disabled={!isTurnCompleted}
+          <ClaimButton
+            disabled={!isTurnCompleted}
             onClick={() => {
-                setIsSelectionActive("Claim");
-                setSuggestion("Select the Sequence to claim");
+              setIsSelectionActive("Claim");
+              setSuggestion("Select the Sequence to claim");
             }}
           >
             Claim
           </ClaimButton>
           {}{" "}
           <Score
-           
-              disabled={!isTurnCompleted}
-              onClick={() => {
-                if(draft){
+            disabled={!isTurnCompleted}
+            onClick={() => {
+              if (draft) {
                 sendDraft();
-                }
-                else{
-
-                  sendMessage({
-                    action: "sendMove",
-                    Message: {
-                      command: "Dead",
-                      roomId: RoomId,
-                      currentPlayer: currentPlayer,
-                      lastPlayedCard: PlayedCard
-                    }
-                  })
-                }
-                setIsTurnCompleted(false);
-                setIsSelectionActive('')
-              }}
-            >
-              Next
-
+              } else {
+                sendMessage({
+                  action: "sendMove",
+                  Message: {
+                    command: "Dead",
+                    roomId: RoomId,
+                    currentPlayer: currentPlayer,
+                    lastPlayedCard: PlayedCard,
+                  },
+                });
+              }
+              setIsTurnCompleted(false);
+              setIsSelectionActive("");
+            }}
+          >
+            Next
           </Score>
-          <ImageGallery
-          />
+          <ImageGallery />
           <CardSelect />
         </div>
-      ) }
+      )}
       <GameResult></GameResult>
       <SuggestionText></SuggestionText>
       <h1>{} </h1>

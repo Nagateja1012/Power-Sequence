@@ -1,34 +1,33 @@
-import styled from '@emotion/styled';
+import styled from "@emotion/styled";
 
-
-export const ResultContainer = styled.div<{display:string}>`
+export const ResultContainer = styled.div<{ display: string }>`
   background-color: white;
   padding: 20px;
   text-align: center;
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   position: absolute;
-   min-width: 30%;
+  min-width: 30%;
   min-height: 30%;
-    width: 70%;
-top:10%;
-left:15%;
-zIndex: 1;
-display: ${(props) => props.display };
+  width: 70%;
+  top: 10%;
+  left: 15%;
+  zindex: 1;
+  display: ${(props) => props.display};
 `;
 
 export const ResultText = styled.h2`
-padding: 10px;
+  padding: 10px;
   animation: moveUp 3s ease-out forwards;
   position: relative;
   text-align: center;
-  color:rgb(241, 145, 36);
+  color: rgb(241, 145, 36);
   font-size: 2.5rem;
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 2px;
   margin-bottom: 2rem;
-  text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
 
   @keyframes moveUp {
     from {

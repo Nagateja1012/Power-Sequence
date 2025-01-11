@@ -1,4 +1,4 @@
-import styled from '@emotion/styled';
+import styled from "@emotion/styled";
 
 export const PlayArea = styled.div`
   position: absolute;
@@ -22,8 +22,6 @@ export const GameBoardStyle = styled.div`
   transform: translate(-50%, -50%);
 `;
 
-
-
 export const Deck = styled.div`
   position: absolute;
   left: 18%;
@@ -40,7 +38,7 @@ export const PlayedCards = styled.div`
 
 export const ClaimButton = styled.button`
   position: absolute;
-   width: 5vw;
+  width: 5vw;
   height: 5.2vh;
   max-width: 100px;
   max-height: 50px;
@@ -58,7 +56,7 @@ export const Score = styled.button`
   position: absolute;
   width: 5vw;
   height: 5.2vh;
-    max-width: 100px;
+  max-width: 100px;
   max-height: 50px;
   background-color: #fff3cd;
   border: 1px solid #ccc;
@@ -69,11 +67,11 @@ export const Score = styled.button`
   top: 60%;
   cursor: pointer;
 `;
-  
+
 export const DeckImage = styled.img`
   width: 7vw;
   height: 18vh;
   max-width: 120px;
   max-height: 180px;
   cursor: pointer;
-`  ;
+`;

@@ -6,7 +6,7 @@ import {
   UpdateCommand,
 } from "@aws-sdk/lib-dynamodb";
 import {
-  ApiGatewayManagementApiClient, 
+  ApiGatewayManagementApiClient,
   PostToConnectionCommand,
 } from "@aws-sdk/client-apigatewaymanagementapi";
 
@@ -19,12 +19,12 @@ const webClient = new ApiGatewayManagementApiClient({
 const TABLES = {
   CONNECTIONS: "PowerSequence_Connections",
   ROOM: "PowerSequence_Room",
-  GAME: "PowerSequence_Game", 
+  GAME: "PowerSequence_Game",
 };
 
 const broadcastToPlayers = async (players, message) => {
   await Promise.all(
-    players.map(player =>
+    players.map((player) =>
       webClient.send(
         new PostToConnectionCommand({
           ConnectionId: player.clientId,
@@ -41,7 +41,7 @@ const updateGameState = async (roomId, updateExpression, expressionValues) => {
       TableName: TABLES.GAME,
       Key: { roomId },
       UpdateExpression: updateExpression,
-      ExpressionAttributeValues: expressionValues
+      ExpressionAttributeValues: expressionValues,
     })
   );
 };
@@ -50,7 +50,7 @@ const getGameState = async (roomId) => {
   const response = await dynamoDB.send(
     new GetCommand({
       TableName: TABLES.GAME,
-      Key: { roomId }
+      Key: { roomId },
     })
   );
   return response.Item;
@@ -61,119 +61,138 @@ const getPlayersInRoom = async (roomId) => {
     new QueryCommand({
       TableName: TABLES.CONNECTIONS,
       KeyConditionExpression: "roomId = :roomId",
-      ExpressionAttributeValues: { ":roomId": roomId }
+      ExpressionAttributeValues: { ":roomId": roomId },
     })
   );
   return response.Items;
 };
 
 export const handler = async (event) => {
-  const { roomId, lastPlayedCard, command, playerMove, currentPlayer: playerId } = JSON.parse(event.body).Message;
+  const {
+    roomId,
+    lastPlayedCard,
+    command,
+    playerMove,
+    currentPlayer: playerId,
+  } = JSON.parse(event.body).Message;
   const [playersInRoom, gameState] = await Promise.all([
     getPlayersInRoom(roomId),
-    getGameState(roomId)
+    getGameState(roomId),
   ]);
-  
+
   const { currentPlayer, isreverse, orderedPlayers } = gameState;
 
   const nextPlayer = isreverse
     ? (currentPlayer - 1 + orderedPlayers.length) % orderedPlayers.length
     : (currentPlayer + 1) % orderedPlayers.length;
 
-  
-  if(command === 'placeCoin'||command === 'Dead'){
+  if (command === "placeCoin" || command === "Dead") {
     await updateGameState(roomId, "SET currentPlayer = :nextPlayer", {
-      ":nextPlayer": nextPlayer
+      ":nextPlayer": nextPlayer,
     });
   }
-  if (command === 'placeCoin') {
-    
+  if (command === "placeCoin") {
     await broadcastToPlayers(playersInRoom, {
       type: "playerMove",
       content: {
         playerMove,
         currentPlayer: orderedPlayers[nextPlayer].playerId,
-        lastPlayedCard
-      }
+        lastPlayedCard,
+      },
     });
-    
-  } else if(command === 'Dead') {
+  } else if (command === "Dead") {
     await broadcastToPlayers(playersInRoom, {
       type: "playerMove",
       content: {
         currentPlayer: orderedPlayers[nextPlayer].playerId,
-        lastPlayedCard
-      }
-    })
-    await broadcastToPlayers(playersInRoom,{
+        lastPlayedCard,
+      },
+    });
+    await broadcastToPlayers(playersInRoom, {
       type: "info",
       content: { info: "Dead Card Played" },
-    })
-  
-  
-  
-   } else if (command === 'Claim') {
-    const [{ numsequence: sequence }, { teamsequence: claimsequence }] = await Promise.all([
-      dynamoDB.send(new GetCommand({
-        TableName: TABLES.GAME,
-        Key: { roomId },
-        ProjectionExpression: "numsequence"
-      })).then(res => res.Item),
-      dynamoDB.send(new GetCommand({
-        TableName: TABLES.GAME,
-        Key: { roomId },
-        ProjectionExpression: "teamsequence"
-      })).then(res => res.Item)
-    ]);
+    });
+  } else if (command === "Claim") {
+    const [{ numsequence: sequence }, { teamsequence: claimsequence }] =
+      await Promise.all([
+        dynamoDB
+          .send(
+            new GetCommand({
+              TableName: TABLES.GAME,
+              Key: { roomId },
+              ProjectionExpression: "numsequence",
+            })
+          )
+          .then((res) => res.Item),
+        dynamoDB
+          .send(
+            new GetCommand({
+              TableName: TABLES.GAME,
+              Key: { roomId },
+              ProjectionExpression: "teamsequence",
+            })
+          )
+          .then((res) => res.Item),
+      ]);
 
     const teamNumber = playerMove[0][0] - 1;
     const sequenceClaimed = playerMove.slice(1);
     const previousSequence = claimsequence[teamNumber];
 
     if (sequence[teamNumber] !== 0) {
-      const matchingSequences = previousSequence.reduce((count, seq) => 
-        count + (sequenceClaimed.some(claimed => 
-          JSON.stringify(claimed) === JSON.stringify(seq)) ? 1 : 0), 0);
+      const matchingSequences = previousSequence.reduce(
+        (count, seq) =>
+          count +
+          (sequenceClaimed.some(
+            (claimed) => JSON.stringify(claimed) === JSON.stringify(seq)
+          )
+            ? 1
+            : 0),
+        0
+      );
 
       if (matchingSequences > 2) {
-        const player = playersInRoom.find(p => p.playerId === playerId);
+        const player = playersInRoom.find((p) => p.playerId === playerId);
         await webClient.send(
           new PostToConnectionCommand({
             ConnectionId: player.clientId,
             Data: JSON.stringify({
               type: "error",
-              content: {error: "More than 2 coins from previous sequences detected in claim"}
-            })
+              content: {
+                error:
+                  "More than 2 coins from previous sequences detected in claim",
+              },
+            }),
           })
         );
-        return { statusCode: 200, body: JSON.stringify('success') };
+        return { statusCode: 200, body: JSON.stringify("success") };
       }
     }
 
     sequence[teamNumber]++;
-    
+
     if (sequence[teamNumber] === 2) {
       await broadcastToPlayers(playersInRoom, {
         type: "Winner",
-        content: { Team: playerMove[0][0].toString() }
+        content: { Team: playerMove[0][0].toString() },
       });
     } else {
-      await broadcastToPlayers(playersInRoom,{
-            type: "sequence",
-            content: { info: "Sequence claimed" },
-          })
-      
+      await broadcastToPlayers(playersInRoom, {
+        type: "sequence",
+        content: { info: "Sequence claimed" },
+      });
+
       claimsequence[teamNumber] = sequenceClaimed;
       await updateGameState(
         roomId,
         "SET numsequence = :sequence, teamsequence = :teamsequence",
         {
           ":sequence": sequence,
-          ":teamsequence": claimsequence
+          ":teamsequence": claimsequence,
         }
       );
     }
   }
 
-  return { statusCode: 200, body: JSON.stringify('success') };
+  return { statusCode: 200, body: JSON.stringify("success") };
 };

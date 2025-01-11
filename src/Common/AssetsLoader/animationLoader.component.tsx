@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 
 
 interface AnimationLoaderProps {
-  src: string; // Unique key for the animation (used for caching)
+  src: string;
 }
 
 const AnimationLoader: React.FC<AnimationLoaderProps> = ({src}) => {
@@ -10,10 +10,9 @@ const AnimationLoader: React.FC<AnimationLoaderProps> = ({src}) => {
 
   useEffect(() => {
     const cacheAnimation = async () => {
-      const cacheName = 'Power-Sequence-assets'; // Cache name
+      const cacheName = 'Power-Sequence-assets';
       const cache = await caches.open(cacheName);
 
-      // Check if the animation data is already cached
       const cachedResponse = await cache.match(src);
       if (cachedResponse) {
         const data = await cachedResponse.json();

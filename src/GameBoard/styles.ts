@@ -1,4 +1,4 @@
-import styled from '@emotion/styled';
+import styled from "@emotion/styled";
 
 export const GridContainer = styled.div`
   display: grid;
@@ -8,22 +8,25 @@ export const GridContainer = styled.div`
   background-color: #e0e0e0;
   padding: 2px;
   border-radius: 4px;
-
 `;
 
-export const Cell = styled.div<{ backgroundColor: string; isClicked?: boolean }>`
+export const Cell = styled.div<{
+  backgroundColor: string;
+  isClicked?: boolean;
+}>`
   width: 3vw;
-  max-width:40px;
+  max-width: 40px;
   height: 5vh;
-   max-height:40px;
-  background-color: ${props => props.backgroundColor};
+  max-height: 40px;
+  background-color: ${(props) => props.backgroundColor};
   display: flex;
   position: relative;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   border-radius: 4px;
-  border: 2px solid ${props => props.isClicked ? 'rgb(162, 0, 255)' : 'transparent'};
+  border: 2px solid
+    ${(props) => (props.isClicked ? "rgb(162, 0, 255)" : "transparent")};
   transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
   box-shadow: 0 2px 4px rgb(255, 255, 255);
 
@@ -49,8 +52,3 @@ export const IconImage = styled.img`
   max-height: 30px;
   object-fit: contain;
 `;
-
-
-
-
-

@@ -1,5 +1,4 @@
-
-import styled from '@emotion/styled';
+import styled from "@emotion/styled";
 
 export const GameFormContainer = styled.div`
   width: 100%;
@@ -78,8 +77,8 @@ export const ModeToggle = styled.div`
 export const ToggleButton = styled.button<{ active?: boolean }>`
   padding: 0.5rem 1rem;
   border: 1px solid #007bff;
-  background: ${props => props.active ? '#007bff' : 'none'};
-  color: ${props => props.active ? 'white' : '#007bff'};
+  background: ${(props) => (props.active ? "#007bff" : "none")};
+  color: ${(props) => (props.active ? "white" : "#007bff")};
   border-radius: 4px;
   cursor: pointer;
   transition: all 0.2s;
@@ -88,20 +87,20 @@ export const ToggleButton = styled.button<{ active?: boolean }>`
 export const SubmitButton = styled(Button)`
   width: 100%;
   margin-top: 1rem;
-`;  
+`;
 
 export const StyledTitle = styled.h1`
   padding: 10px;
   animation: moveUp 3s ease-out forwards;
   position: relative;
   text-align: center;
-  color:rgb(241, 145, 36);
+  color: rgb(241, 145, 36);
   font-size: 2.5rem;
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 2px;
   margin-bottom: 2rem;
-  text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
   white-space: nowrap;
   @keyframes moveUp {
     from {
@@ -113,4 +112,4 @@ export const StyledTitle = styled.h1`
       transform: translateY(0);
     }
   }
-`
+`;

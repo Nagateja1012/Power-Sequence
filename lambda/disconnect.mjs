@@ -5,7 +5,7 @@ import {
   GetCommand,
   QueryCommand,
   UpdateCommand,
-  DeleteCommand
+  DeleteCommand,
 } from "@aws-sdk/lib-dynamodb";
 import {
   ApiGatewayManagementApiClient,
@@ -20,18 +20,18 @@ const webClient = new ApiGatewayManagementApiClient({
 
 const TABLES = {
   CONNECTIONS: "PowerSequence_Connections",
-  ROOM: "PowerSequence_Room", 
+  ROOM: "PowerSequence_Room",
   GAME: "PowerSequence_Game",
 };
 
 const response = {
   statusCode: 200,
-  body: JSON.stringify('Hello from Lambda!'),
+  body: JSON.stringify("Hello from Lambda!"),
 };
 
 const broadcastToPlayers = async (players, message) => {
   await Promise.all(
-    players.map(player =>
+    players.map((player) =>
       webClient.send(
         new PostToConnectionCommand({
           ConnectionId: player.clientId,
@@ -47,46 +47,48 @@ const getPlayersInRoom = async (roomId) => {
     new QueryCommand({
       TableName: TABLES.CONNECTIONS,
       KeyConditionExpression: "roomId = :roomId",
-      ExpressionAttributeValues: { ":roomId": roomId }
+      ExpressionAttributeValues: { ":roomId": roomId },
     })
   );
   return response.Items;
 };
-  const getGameState = async (roomId) => {
-    const response = await dynamoDB.send(
-      new GetCommand({
-        TableName: TABLES.GAME,
-        Key: { roomId }
-      })
-    );
-    return response.Item;
-  };
+const getGameState = async (roomId) => {
+  const response = await dynamoDB.send(
+    new GetCommand({
+      TableName: TABLES.GAME,
+      Key: { roomId },
+    })
+  );
+  return response.Item;
+};
 
+const updateGameState = async (
+  roomId,
+  updateExpression,
+  expressionAttributeValues
+) => {
+  await dynamoDB.send(
+    new UpdateCommand({
+      TableName: TABLES.GAME,
+      Key: { roomId },
+      UpdateExpression: updateExpression,
+      ExpressionAttributeValues: expressionAttributeValues,
+    })
+  );
+};
 
-   const updateGameState = async (roomId, updateExpression, expressionAttributeValues) => {
-      await dynamoDB.send(
-        new UpdateCommand({
-          TableName: TABLES.GAME,
-          Key: { roomId },
-          UpdateExpression: updateExpression,
-          ExpressionAttributeValues: expressionAttributeValues
-        })
-      );
-    };
-
-
-    const deleteConnection = async (roomId, clientId , playerId) => {
-      await dynamoDB.send(
-        new DeleteCommand({
-          TableName: TABLES.CONNECTIONS,
-          Key: { roomId , playerId }, // Use the partition key
-          ConditionExpression: "clientId = :clientId", // Ensure clientId matches
-          ExpressionAttributeValues: {
-            ":clientId": clientId
-          }
-        })
-      );
-    };
+const deleteConnection = async (roomId, clientId, playerId) => {
+  await dynamoDB.send(
+    new DeleteCommand({
+      TableName: TABLES.CONNECTIONS,
+      Key: { roomId, playerId }, // Use the partition key
+      ConditionExpression: "clientId = :clientId", // Ensure clientId matches
+      ExpressionAttributeValues: {
+        ":clientId": clientId,
+      },
+    })
+  );
+};
 
 const getNextPlayerIndex = (currentPlayer, isReverse, totalPlayers) => {
   return isReverse
@@ -97,57 +99,63 @@ const getNextPlayerIndex = (currentPlayer, isReverse, totalPlayers) => {
 export const handler = async (event) => {
   const clientId = event.requestContext.connectionId;
 
-  const {Items} = await dynamoDB.send(
+  const { Items } = await dynamoDB.send(
     new QueryCommand({
       TableName: TABLES.CONNECTIONS,
       IndexName: "clientId-index", // Replace with your GSI name
       KeyConditionExpression: "clientId = :clientId",
       ExpressionAttributeValues: {
-        ":clientId": clientId
-      }
+        ":clientId": clientId,
+      },
     })
   );
-  const Item = Items[0]
+  const Item = Items[0];
   if (!Item) {
     return response;
   }
-    
+
   const { playerId, roomId } = Item;
 
   const [playersInRoom, gameState] = await Promise.all([
     getPlayersInRoom(roomId),
-    getGameState(roomId)
+    getGameState(roomId),
   ]);
-      
-  if(gameState){
-  const { currentPlayer, isreverse, orderedPlayers } = gameState;
-  const playerIndex = orderedPlayers.findIndex(player => player.playerId === playerId);
 
-  await deleteConnection(roomId,clientId, playerId);
-
-  if (playerIndex === currentPlayer) {
-    const nextPlayer = getNextPlayerIndex(currentPlayer, isreverse, orderedPlayers.length);
-
-    await updateGameState(roomId, "SET currentPlayer = :skipNextplayer", {
-      ":skipNextplayer": nextPlayer
-    });
-
-    await broadcastToPlayers(
-      playersInRoom.filter(player => player.playerId !== playerId), 
-      {
-        type: "PowerUpdate",
-        content: { currentPlayer: orderedPlayers[nextPlayer].playerId }
-      }
+  if (gameState) {
+    const { currentPlayer, isreverse, orderedPlayers } = gameState;
+    const playerIndex = orderedPlayers.findIndex(
+      (player) => player.playerId === playerId
     );
+
+    await deleteConnection(roomId, clientId, playerId);
+
+    if (playerIndex === currentPlayer) {
+      const nextPlayer = getNextPlayerIndex(
+        currentPlayer,
+        isreverse,
+        orderedPlayers.length
+      );
+
+      await updateGameState(roomId, "SET currentPlayer = :skipNextplayer", {
+        ":skipNextplayer": nextPlayer,
+      });
+
+      await broadcastToPlayers(
+        playersInRoom.filter((player) => player.playerId !== playerId),
+        {
+          type: "PowerUpdate",
+          content: { currentPlayer: orderedPlayers[nextPlayer].playerId },
+        }
+      );
+    }
+
+    const updatedPlayers = orderedPlayers.filter(
+      (player) => player.playerId !== playerId
+    );
+    await updateGameState(roomId, "SET orderedPlayers = :players", {
+      ":players": updatedPlayers,
+    });
   }
-     
-  const updatedPlayers = orderedPlayers.filter(player => player.playerId !== playerId);
-  await updateGameState(roomId, "SET orderedPlayers = :players", {
-    ":players": updatedPlayers,
-  });
-}
-      
+
   return response;
-}
-
-
+};

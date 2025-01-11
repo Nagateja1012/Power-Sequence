@@ -1,6 +1,5 @@
 import { createContext, useContext, useState } from "react";
 
-// Animation name context to track and manage current animation state
 const AnimationContext = createContext<{
   animationName: string;
   setAnimationName: (name: string) => void;
@@ -13,7 +12,6 @@ const AnimationContext = createContext<{
   setaniamtionDisplay: () => {},
 });
 
-// Provider component to wrap application and provide animation context
 export const AnimationProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [animationName, setAnimationName] = useState<string>('');
   const [aniamtionDisplay, setaniamtionDisplay] = useState<boolean>(false);
@@ -25,7 +23,6 @@ export const AnimationProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   );
 };
 
-// Custom hook to use animation context
 export const useAnimation = () => {
   const context = useContext(AnimationContext);
   if (!context) {

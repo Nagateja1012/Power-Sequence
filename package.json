@@ -18,8 +18,7 @@
     "lottie-react": "^2.4.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-howler": "^5.2.0",
-    "use-sound": "^4.0.3"
+    "react-howler": "^5.2.0"
   },
   "devDependencies": {
     "@aws-amplify/backend": "^1.5.0",
