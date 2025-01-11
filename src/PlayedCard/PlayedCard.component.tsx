@@ -1,10 +1,11 @@
 
 import React, { useEffect } from 'react';
 import { CardImage, PlayedCards } from './PlayedCard.styles';
-import ImageLoader from '../AssetsLoader/imageLoader.component';
+import ImageLoader from '../Common/AssetsLoader/imageLoader.component';
 import { usePlayedCard } from './PlayedCard.context';
 import { useWebSocket } from '../Services/websocket.services';
-import { useAnimation } from '../GameAnimations/animation.context';
+import { useAnimation } from '../Common/GameAnimations/animation.context';
+
 
 
 

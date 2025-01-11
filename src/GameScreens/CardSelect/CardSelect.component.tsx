@@ -1,13 +1,13 @@
 
 import React from 'react';
 import { CardSelectContainer, CardSelectGrid, CardSelectHeader, CardSelectImg } from './CardSelect.styles';
-import ImageLoader from '../../AssetsLoader/imageLoader.component';
+import ImageLoader from '../../Common/AssetsLoader/imageLoader.component';
 import { useCards } from './CardSelect.context';
-import { usePlayerHand } from '../../playerHand/playerHand.context';
+import { usePlayerHand } from '../../PlayerHand/playerHand.context';
 
 import { useGrab } from '../../Player/player.context';
 import { useWebSocket } from '../../Services/websocket.services';
-import { useCurrentPlayer } from '../Room/player.context';
+import { useCurrentPlayer } from '../Room/Room.context';
 
 
 const CardSelect: React.FC = () => {
@@ -47,7 +47,7 @@ const removeCardFromDeck = (imageName: string, cards: string[]): string[] => {
             
             
             }else{
-              console.log(grabbedCard)
+
               setImages( [...images, grabbedCard])
               setgrabbedCard('')
             }

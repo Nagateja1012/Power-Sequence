@@ -1,15 +1,17 @@
 import { useEffect, useState } from "react";
 import BoardRender from "./boardRender.component";
 
-import { CellData } from "./types";
+import { CellData } from "../Common/models/model";
 import { getColor, arePointsInLine } from "./utils";
-import Animation from "../GameAnimations/animation.component";
-import { CoinSound } from "../GameSounds/SoundEffects.component";
+
+
 import { useSelection } from "./gameboard.context";
 import { useWebSocket } from "../Services/websocket.services";
-import { useCurrentPlayer } from "../GameScreens/Room/player.context";
+import { useCurrentPlayer } from "../GameScreens/Room/Room.context";
 import { usePlayedCard } from "../PlayedCard/PlayedCard.context";
-import { useTurn } from "../Deck/deck.context";
+import { useTurn } from "../PlayArea/deck.context";
+import Animation from "../Common/GameAnimations/animation.component";
+import { CoinSound } from "../Common/GameSounds/SoundEffects.component";
 
 
 
@@ -100,7 +102,7 @@ useEffect(()=>{
         if (selectedcells.length === maxLimit) {
           if (maxLimit === 4) setMaxSelectionLimit(5);
           if(arePointsInLine(selectedcells)){
-              console.log(selectedcells)
+
 
               // send message to the server about the remove of the coins
               sendMessage({ action: "PowerCardAction", Message: { roomId:RoomId, command : "Destroy", playerMove: [selectedcells], currentPlayer } })
@@ -139,7 +141,7 @@ useEffect(()=>{
 
     
     if (grid[row][col].value !== -1) {
-      console.log(   )    
+
   const newGrid = grid.map((row) => [...row]);
         if(isSelectionActive === 'Erase' && grid[row][col].hasIcon === true) {
           newGrid[row][col] = {
@@ -155,7 +157,7 @@ useEffect(()=>{
           grid[row][col].hasIcon === false) ||
          (isSelectionActive === 'Joker' && grid[row][col].hasIcon === false)) { // Fixed parenthesis
                     CoinSound();
-          console.log('coin placed')
+
           newGrid[row][col] = {
             ...newGrid[row][col],
             hasIcon: true,

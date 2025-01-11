@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { useCurrentPlayer } from "./player.context";
+import { useCurrentPlayer } from "./Room.context";
 import { ChangeButton, NextButton, PlayerItem, PlayerList, PlayerListItem, RoomContainer, RoomIdD, TeamBlock, TeamBlocks, TeamSelect, TeamTitle, Title, WaitingBlock, WaitingTitle } from "./Room.Styles";
-import { Player } from "../../models/model";
+import { Player } from "../../Common/models/model";
 import { useWebSocket } from "../../Services/websocket.services";
 
 

@@ -1,7 +1,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
-import { PlayerCardImg, PlayerScrollButtonLeft, PlayerScrollButtonRight } from '../GameBoard/styles';
-import ImageLoader from '../AssetsLoader/imageLoader.component';
+import { PlayerCardImg, PlayerScrollButtonLeft, PlayerScrollButtonRight } from './playerHand.styles';
+import ImageLoader from '../Common/AssetsLoader/imageLoader.component';
 import { useSelection } from '../GameBoard/gameboard.context';
 import { usePlayedCard } from '../PlayedCard/PlayedCard.context';
 import { usePlayerHand } from './playerHand.context';
@@ -9,9 +9,9 @@ import { useCards } from '../GameScreens/CardSelect/CardSelect.context';
 import { useGrab } from '../Player/player.context';
 
 import { useSuggestion } from '../GameScreens/Suggestion/Suggestion.context';
-import { useTurn } from '../Deck/deck.context';
+import { useTurn } from '../PlayArea/deck.context';
 import { useWebSocket } from '../Services/websocket.services';
-import { useCurrentPlayer } from '../GameScreens/Room/player.context';
+import { useCurrentPlayer } from '../GameScreens/Room/Room.context';
 
 
 const ImageGallery: React.FC = () => {
@@ -33,7 +33,6 @@ const ImageGallery: React.FC = () => {
      useEffect(() => {
 
       if(messages[0]?.content?.currentPlayer === currentPlayer){
-        console.log(images.length)
         if(images.length === 0){
           setIsTurnCompleted(true)
         }else{
@@ -53,7 +52,6 @@ const ImageGallery: React.FC = () => {
         }
         
         if(messages[0]?.content?.command === "Alter1" && messages[0]?.content?.cards ){
-          console.log("Alter1 use effect triggered")
           setCards(messages[0]?.content?.cards)
           setDisplay(true)
         }
@@ -155,11 +153,10 @@ const HandleCard = (image: string, index:number) =>{
   setIsYourTurn(false)
   setImages(images.filter((_, i) => i !== index))  
   setPlayedCard(image)
-  console.log(dropCard)
   if(dropCard){
     
     if(image === 'DROP'){
-      console.log(DropCardNum)
+
       sendMessage({
         action: "PowerCardAction",
         Message: {
@@ -195,7 +192,7 @@ const HandleCard = (image: string, index:number) =>{
   } else {
 
   if(allcardvalues.includes(image)) {
-    console.log(image)
+
     setSuggestion("Place a coin on the board")
     setIsSelectionActive('Place');
     setCardValue(image)

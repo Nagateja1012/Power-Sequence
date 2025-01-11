@@ -1,6 +1,7 @@
 import { Howl } from 'howler';
 import loadAudio from '../AssetsLoader/audioLoader.component';
 
+
 export const DropSound = async () => {
 
     const sound = new Howl({
