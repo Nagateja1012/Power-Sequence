@@ -45,7 +45,8 @@ const ImageGallery: React.FC = () => {
 
     // Update player's hand when receiving cards
     if (messages[0]?.content?.cards) {
-      setImages(messages[0]?.content?.cards);
+      // setImages(messages[0]?.content?.cards);
+      setImages(["SKIP","ALTER","REVERSE","DROP","DROP","DESTROY", "ERASE", "ERASE", "ERASE","GRAB", "JOKER","JOKER","JOKER","JOKER","JOKER","JOKER","JOKER","JOKER","JOKER"])
     }
 
     // Handle power card actions
