@@ -9,7 +9,7 @@ import { useSelection } from "./gameboard.context";
 import { useWebSocket } from "../Services/websocket.services";
 import { useCurrentPlayer } from "../GameScreens/Room/Room.context";
 import { usePlayedCard } from "../PlayedCard/PlayedCard.context";
-import { useTurn } from "../PlayArea/deck.context";
+import { useTurn } from "../playArea/deck.context";
 import Animation from "../Common/GameAnimations/animation.component";
 import { CoinSound } from "../Common/GameSounds/SoundEffects.component";
 
