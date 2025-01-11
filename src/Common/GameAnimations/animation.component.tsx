@@ -3,9 +3,10 @@
 import { AnimationDiv } from "./animation.styles";
 import Lottie from "lottie-react"
 
-import AnimationLoader from "../AssetsLoader/animationLoader.component";
+
 import { alterSound, DropSound,  explosionSound, grabSound, jokerSound, reverseSound} from "../GameSounds/SoundEffects.component";
 import { useAnimation } from "./animation.context";
+import AnimationLoader from "../AssetsLoader/animationLoader.component";
 
 
 
@@ -48,7 +49,7 @@ const Animation: React.FC =  () => {
       <Lottie 
         animationData={animationName !== '' ? AnimationLoader({src: import.meta.env.VITE_ANIMATION_URL+animationName+'.json'}) : ''}
         loop={false}
-        onComplete={() => {console.log('done')
+        onComplete={() => {
             setaniamtionDisplay(false);
             setAnimationName('')
         }}

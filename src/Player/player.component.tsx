@@ -4,7 +4,7 @@ import { useCards } from "../GameScreens/CardSelect/CardSelect.context";
 import { useGrab } from "./player.context";
 import { PlayerContainer, PlayerImage, PlayerName } from "./player.styles";
 import { useWebSocket } from "../Services/websocket.services";
-import { useCurrentPlayer } from "../GameScreens/Room/player.context";
+import { useCurrentPlayer } from "../GameScreens/Room/Room.context";
 
 // Types for player data
 interface PlayerData {
@@ -36,7 +36,7 @@ export function CreatePlayerElements(): JSX.Element[] {
      }, [messages]);
   const handlePlayeClick = (name:string) =>{
    if(grab){
-    console.log("grab triggerd", name)
+
     sendMessage({
       action: "PowerCardAction",
       Message: {

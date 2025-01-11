@@ -1,8 +1,8 @@
 import GameBoard from "../GameBoard/gameboard.component";
-import ImageGallery from "../playerHand/playerHand.component";
+import ImageGallery from "../PlayerHand/playerHand.component";
 import { CreatePlayerElements } from "../Player/player.component";
 import CardPlayed from "../PlayedCard/PlayedCard.component";
-import ImageLoader from "../AssetsLoader/imageLoader.component";
+import ImageLoader from "../Common/AssetsLoader/imageLoader.component";
 import {
   ClaimButton,
   Deck,
@@ -16,21 +16,22 @@ import { useSelection } from "../GameBoard/gameboard.context";
 
 import { useState, useEffect } from "react";
 
-import { GameFormData } from "../models/model";
+import { GameFormData } from "../Common/models/model";
 
 
 
-import { useCurrentPlayer } from "../GameScreens/Room/player.context";
+import { useCurrentPlayer } from "../GameScreens/Room/Room.context";
 import GameForm from "../GameScreens/lobby/lobby.component";
 import RoomScreen from "../GameScreens/Room/Room.component";
 import GameResult from "../GameScreens/GameEnd/GameEnd.component";
 import SuggestionText from "../GameScreens/Suggestion/Suggestion.component";
 import { useSuggestion } from "../GameScreens/Suggestion/Suggestion.context";
-import { useTurn } from "../Deck/deck.context";
+import { useTurn } from "./deck.context";
 import { useWebSocket } from "../Services/websocket.services";
 
 import { usePlayedCard } from "../PlayedCard/PlayedCard.context";
-import { gameSound, sequenceSound } from "../GameSounds/SoundEffects.component";
+import { gameSound, sequenceSound } from "../Common/GameSounds/SoundEffects.component";
+
 
 function App() {
 
@@ -39,8 +40,6 @@ function App() {
   const { setIsSelectionActive } = useSelection();
   const { setCurrentPlayer, RoomId, currentPlayer } = useCurrentPlayer();
   const [currentScreen, setCurrentScreen] = useState("gameForm");
-  // const { images, setImages  } = usePlayerHand();
-  // const { setdropCard, setDropCardNum } = useCards();
   const { setSuggestion, setSuggestionType } = useSuggestion();
   const { isYourTurn, setIsTurnCompleted, setIsYourTurn , isTurnCompleted} = useTurn();
   const { sendMessage, messages , sendDraft, draft} = useWebSocket();
@@ -147,7 +146,7 @@ function App() {
                 sendDraft();
                 }
                 else{
-                  console.log(PlayedCard)
+
                   sendMessage({
                     action: "sendMove",
                     Message: {

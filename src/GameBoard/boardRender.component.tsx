@@ -1,7 +1,7 @@
 import React from 'react';
 import { GridContainer, Cell, CellNumber, IconImage } from './styles';
-import { CellData } from './types';
-import ImageLoader from '../AssetsLoader/imageLoader.component';
+import { CellData } from '../Common/models/model';
+import ImageLoader from '../Common/AssetsLoader/imageLoader.component';
 
 
 

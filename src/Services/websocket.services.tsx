@@ -33,16 +33,16 @@ export const WebSocketProvider: React.FC<{children: React.ReactNode}> = ({ child
 
   useEffect(() => {
     // Replace with your AWS API Gateway WebSocket URL
-    const ws = new WebSocket('wss://dgu6c735ck.execute-api.us-east-1.amazonaws.com/production/');
+    const ws = new WebSocket(import.meta.env.VITE_WEBSOCKET_URL);
 
     ws.onopen = () => {
 
-      console.log('WebSocket connected');
+
       setSocket(ws);
     };
 
     ws.onmessage = (event: MessageEvent) => {
-      console.log('Message received:', event.data);
+
       try {
         const parsedData: WebSocketMessage = JSON.parse(event.data);
         setMessages([parsedData]); // Only keep latest message
@@ -53,7 +53,6 @@ export const WebSocketProvider: React.FC<{children: React.ReactNode}> = ({ child
 
     ws.onclose = () => {
 
-      console.log('WebSocket disconnected');
       setSocket(null);
     };
 
@@ -70,7 +69,7 @@ export const WebSocketProvider: React.FC<{children: React.ReactNode}> = ({ child
 
   const sendMessage = (message: MoveMessage): void => {
     if (socket && socket.readyState === WebSocket.OPEN) {
-      console.log('Sending message:', message);
+
       socket.send(JSON.stringify(message));
     } 
   };

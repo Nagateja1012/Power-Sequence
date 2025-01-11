@@ -38,7 +38,6 @@ const sendMessage = async (connectionId, message) => {
         Data: Buffer.from(JSON.stringify(message)),
       })
     );
-    console.log("Message sent successfully to connection:", connectionId);
   } catch (error) {
     console.error("Error sending message:", error);
     throw error;

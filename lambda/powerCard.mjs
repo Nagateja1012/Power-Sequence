@@ -75,7 +75,7 @@ const getPlayersInRoom = async (roomId) => {
   };
 
 export const handler = async (event) => {
-    console.log(event);
+
 
     const { roomId, currentPlayer: playerId,command, playerMove,grabPlayer, lastPlayedCard } = JSON.parse(event.body).Message;
 
@@ -205,12 +205,11 @@ case 'Destroy':
      const destroyNext = getNextPlayer(isreverse, currentPlayer, orderedPlayers)
 // Function to check if arrays are equal regardless of element order
 const areArraysEqual = (arr1, arr2) => {
-  console.log('from user', arr1,'from game', arr2 )
+
   if (arr1.length !== arr2.length) return false;
   const sorted1 = [...arr1].sort((a,b) => a[0] === b[0] ? a[1] - b[1] : a[0] - b[0]);
   const sorted2 = [...arr2].sort((a,b) => a[0] === b[0] ? a[1] - b[1] : a[0] - b[0]);
-  console.log('from user', arr1,'from game', arr2 ,'sorted')
-  console.log(sorted1.every((val, idx) => val[0] === sorted2[idx][0] && val[1] === sorted2[idx][1]))
+ 
   return sorted1.every((val, idx) => val[0] === sorted2[idx][0] && val[1] === sorted2[idx][1]);
 };
 
@@ -224,8 +223,7 @@ const checkSequenceMatch = (playerSequence, teamSequences) => {
   }
   return -1;
 };
-console.log('from user', playerMove)
-console.log('from game', teamsequence)
+
 const index = checkSequenceMatch(playerMove, teamsequence)
 
 if(index != -1){
@@ -327,9 +325,9 @@ await updateGameState(roomId, "SET currentPlayer = :skipNextplayer", {
 return response;
 
 case 'Grab':
-    console.log(grabPlayer)
+
     const grabplayerfrom = playersInRoom.find(p => p.playerId === grabPlayer);
-    console.log(grabplayerfrom)
+
     await webClient.send(
         new PostToConnectionCommand({
           ConnectionId: grabplayerfrom.clientId,
