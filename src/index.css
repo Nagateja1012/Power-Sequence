@@ -16,7 +16,7 @@ html {
 #root {
   width: 100%;
   height: 100%;
-  background-image: url("https://amplify-d2m60estt4gxi5-ma-gameassetsbucket667d9212-ajqdx2pdjows.s3.us-east-1.amazonaws.com/assets/background.jpg");
+  background-image: url(https://powersequence.s3.us-east-1.amazonaws.com/assets/background.jpg);
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
