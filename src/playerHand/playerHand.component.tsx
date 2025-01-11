@@ -9,7 +9,7 @@ import { useCards } from '../GameScreens/CardSelect/CardSelect.context';
 import { useGrab } from '../Player/player.context';
 
 import { useSuggestion } from '../GameScreens/Suggestion/Suggestion.context';
-import { useTurn } from '../PlayArea/deck.context';
+import { useTurn } from '../playArea/deck.context';
 import { useWebSocket } from '../Services/websocket.services';
 import { useCurrentPlayer } from '../GameScreens/Room/Room.context';
 

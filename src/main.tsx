@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import App from "./PlayArea/App.tsx";
+import App from "./playArea/App.tsx";
 import "./index.css";
 import { Amplify } from "aws-amplify";
 import outputs from "../amplify_outputs.json";
@@ -8,13 +8,13 @@ import { SelectionProvider } from "./GameBoard/gameboard.context.tsx";
 
 
 import { PlayedCardProvider } from "./PlayedCard/PlayedCard.context.tsx";
-import { PlayerHandProvider } from "./PlayerHand/playerHand.context.tsx";
+import { PlayerHandProvider } from "./playerHand/playerHand.context.tsx";
 import { CardProvider } from "./GameScreens/CardSelect/CardSelect.context.tsx";
 import { GrabProvider } from "./Player/player.context.tsx";
 import { CurrentPlayerProvider } from "./GameScreens/Room/Room.context.tsx";
 
 import { SuggestionProvider } from "./GameScreens/Suggestion/Suggestion.context.tsx";
-import { TurnProvider } from "./PlayArea/deck.context.tsx";
+import { TurnProvider } from "./playArea/deck.context.tsx";
 import { WebSocketProvider } from "./Services/websocket.services.tsx";
 import { AnimationProvider } from "./Common/GameAnimations/animation.context.tsx";
 

@@ -1,5 +1,5 @@
 import GameBoard from "../GameBoard/gameboard.component";
-import ImageGallery from "../PlayerHand/playerHand.component";
+import ImageGallery from "../playerHand/playerHand.component";
 import { CreatePlayerElements } from "../Player/player.component";
 import CardPlayed from "../PlayedCard/PlayedCard.component";
 import ImageLoader from "../Common/AssetsLoader/imageLoader.component";
