@@ -16,8 +16,11 @@ import { SuggestionProvider } from "./GameScreens/Suggestion/Suggestion.context.
 import { TurnProvider } from "./playArea/deck.context.tsx";
 import { WebSocketProvider } from "./Services/websocket.services.tsx";
 import { AnimationProvider } from "./Common/GameAnimations/animation.context.tsx";
+import { HelpButtons } from "./GameScreens/Rules/Rules.component.tsx";
 
 Amplify.configure(outputs);
+
+
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
@@ -32,6 +35,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
                     <SelectionProvider>
                       <CurrentPlayerProvider>
                         <App />
+                        <HelpButtons />
                         <h3 className="DesignBy">
                           Designed and devloped by Naga Teja for AWS Hackathon
                         </h3>
