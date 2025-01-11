@@ -73,12 +73,12 @@ const broadcastToRoom = async (players, roomId) => {
   const messagePromises = players.Items.map((player) =>
     sendMessage(player.clientId, {
       type: "PlayerData",
-      content: { 
-        roomId, 
+      content: {
+        roomId,
         players: playerData,
         numTeams: roomData.Item.numTeam,
         playersLeft: roomData.Item.playersLeft,
-        currentScreen: "roomScreen"
+        currentScreen: "roomScreen",
       },
     })
   );
@@ -101,7 +101,6 @@ const teamSelected = async (message) => {
 
     const playersInRoom = await getPlayersInRoom(roomId);
     await broadcastToRoom(playersInRoom, roomId);
-    
   } catch (error) {
     console.error("Error updating team selection:", error);
     throw error;
@@ -151,13 +150,13 @@ export const handler = async (event) => {
   const clientId = event.requestContext.connectionId;
 
   if (message.Message.teamSelect) {
-     await teamSelected(message.Message);
+    await teamSelected(message.Message);
     return {
-        statusCode: 200,
-        body: JSON.stringify({
-          message: "updated team",
-        }),
-      };
+      statusCode: 200,
+      body: JSON.stringify({
+        message: "updated team",
+      }),
+    };
   } else {
     const connections = {
       TableName: TABLES.CONNECTIONS,
@@ -191,16 +190,26 @@ export const handler = async (event) => {
         ) {
           await sendMessage(clientId, {
             type: "error",
-            content: { error: roomData.Item.playersLeft === 0 ? "Room is full" : "Invalid room ID or password" },
+            content: {
+              error:
+                roomData.Item.playersLeft === 0
+                  ? "Room is full"
+                  : "Invalid room ID or password",
+            },
           });
           return {
             statusCode: 401,
-            body: JSON.stringify({ message: roomData.Item.playersLeft === 0 ? "Room is full" : "Invalid room ID or password" }),
+            body: JSON.stringify({
+              message:
+                roomData.Item.playersLeft === 0
+                  ? "Room is full"
+                  : "Invalid room ID or password",
+            }),
           };
         }
 
         await dynamoDB.send(new PutCommand(connections));
-        
+
         await dynamoDB.send(
           new UpdateCommand({
             TableName: TABLES.ROOM,
@@ -225,7 +234,10 @@ export const handler = async (event) => {
     } catch (error) {
       await sendMessage(clientId, {
         type: "error",
-        content: { error: "Failed to create/join game room. check credentials and Please Try Again" },
+        content: {
+          error:
+            "Failed to create/join game room. check credentials and Please Try Again",
+        },
       });
       return {
         statusCode: 500,

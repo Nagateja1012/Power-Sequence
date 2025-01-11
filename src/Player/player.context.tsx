@@ -1,7 +1,6 @@
 
 import { createContext, useContext, useState } from 'react';
 
-// Create context with initial value
 const GrabContext = createContext<{
   grab: boolean;
   playerName: string;
@@ -18,7 +17,6 @@ const GrabContext = createContext<{
   setgrabbedCard: () => {},
 });
 
-// Custom hook to use the grab context
 export const useGrab = () => {
   const context = useContext(GrabContext);
   if (!context) {
@@ -27,7 +25,6 @@ export const useGrab = () => {
   return context;
 };
 
-// Provider component
 export const GrabProvider = ({ children }: { children: React.ReactNode }) => {
   const [grab, setGrab] = useState<boolean>(false);
   const [playerName, setplayerName] = useState<string>('');

@@ -94,10 +94,9 @@ export const RoomIdD = styled.div`
   font-style: italic;
 `;
 
-
 export const ChangeButton = styled.button`
   padding: 5px 10px;
-  background-color: #4CAF50;
+  background-color: #4caf50;
   color: white;
   border: none;
   border-radius: 4px;

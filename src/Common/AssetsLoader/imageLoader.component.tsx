@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
 
-const FallbackImage = 'https://via.placeholder.com/150'; // Replace with your own fallback image URL
+const FallbackImage = 'https://via.placeholder.com/150';
 
 interface ImageLoaderProps {
-  src: string; // The S3 URL of the image
-  StyledImg: React.ComponentType<React.ImgHTMLAttributes<HTMLImageElement>>; // Accept a styled img component
+  src: string;
+  StyledImg: React.ComponentType<React.ImgHTMLAttributes<HTMLImageElement>>;
 }
 
 const ImageLoader: React.FC<ImageLoaderProps> = ({ src, StyledImg }) => {
-  const [imageUrl, setImageUrl] = useState<string>(FallbackImage); // Default to fallback image
+  const [imageUrl, setImageUrl] = useState<string>(FallbackImage);
   const [, setHasError] = useState<boolean>(false);
 
   useEffect(() => {
@@ -17,24 +17,22 @@ const ImageLoader: React.FC<ImageLoaderProps> = ({ src, StyledImg }) => {
       const cache = await caches.open(cacheName);
 
       try {
-        // Check if the image is already cached
         const cachedResponse = await cache.match(src);
         if (cachedResponse) {
-          setImageUrl(src); // Use cached image
+          setImageUrl(src);
         } else {
-          // Fetch the image if not cached
           const response = await fetch(src);
           if (response.ok) {
             await cache.put(src, response.clone());
-            setImageUrl(src); // Use the fetched image
+            setImageUrl(src);
           } else {
             throw new Error('Image fetch failed');
           }
         }
       } catch (error) {
         console.error('Error caching image:', error);
-        setHasError(true); // Set error state
-        setImageUrl(FallbackImage); // Use fallback image
+        setHasError(true);
+        setImageUrl(FallbackImage);
       }
     };
 
@@ -47,7 +45,7 @@ const ImageLoader: React.FC<ImageLoaderProps> = ({ src, StyledImg }) => {
       alt="Dynamic content"
       onError={() => {
         setHasError(true);
-        setImageUrl(FallbackImage); // Use fallback image on error
+        setImageUrl(FallbackImage);
       }}
     />
   );

@@ -1,4 +1,4 @@
-import styled from '@emotion/styled';
+import styled from "@emotion/styled";
 
 export const PlayedCards = styled.div`
   position: absolute;
@@ -14,5 +14,3 @@ export const CardImage = styled.img`
   max-height: 220px;
   cursor: pointer;
 `;
-
-
