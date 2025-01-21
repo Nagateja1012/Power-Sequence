@@ -1,5 +1,7 @@
 # PowerSequence - 12-Player Multiplayer Strategy Game
 
+Try: https://main.dbwhikhrqp908.amplifyapp.com/
+
 Welcome to **PowerSequence**, the multiplayer strategy game that lets you outsmart your rivals in a fast-paced, collaborative environment. Designed for **12 players**, PowerSequence offers an exciting blend of strategy, defense, and fun—all in one game!
 
 ## Features
